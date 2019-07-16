@@ -1,0 +1,4 @@
+data/*
+widgets/__pycache__/*
+GUI_data/*
+.ipynb_checkpoints
