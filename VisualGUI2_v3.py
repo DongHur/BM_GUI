@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 
-from PyQt5.QtCore import QRect, Qt, QMetaObject, QTimer, QDir, QUrl
+from PyQt5.QtCore import QRect, Qt, QMetaObject, QTimer, QDir, QUrl, QCoreApplication
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QSlider, QPushButton, QLabel, QLCDNumber, 
 QFrame, QLineEdit, QComboBox, QMenuBar, QStatusBar, QAction, QFileDialog, QMenu)
@@ -78,46 +78,7 @@ class Ui_MainWindow(object):
         self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.stopButton.setObjectName("stopButton")
 
-        self.editBehaviorLabel = QLabel(self.centralwidget)
-        self.editBehaviorLabel.setGeometry(QRect(540, 430, 69, 16))
-        self.editBehaviorLabel.setObjectName("editBehaviorLabel")
-
-        self.editBehaviorFrLabel = QLabel(self.centralwidget)
-        self.editBehaviorFrLabel.setGeometry(QRect(720, 430, 101, 16))
-        self.editBehaviorFrLabel.setObjectName("editBehaviorFrLabel")
-
-        self.divider1 = QFrame(self.centralwidget)
-        self.divider1.setGeometry(QRect(10, 390, 1421, 20))
-        self.divider1.setFrameShape(QFrame.HLine)
-        self.divider1.setFrameShadow(QFrame.Sunken)
-        self.divider1.setObjectName("divider1")
-
-        self.dashLabel = QLabel(self.centralwidget)
-        self.dashLabel.setGeometry(QRect(750, 450, 16, 16))
-        self.dashLabel.setObjectName("dashLabel")
-
-        self.editBehaviorStartBox = QLineEdit(self.centralwidget)
-        self.editBehaviorStartBox.setGeometry(QRect(680, 450, 61, 21))
-        self.editBehaviorStartBox.setText("")
-        self.editBehaviorStartBox.setObjectName("editBehaviorStartBox")
-        self.editBehaviorStartBox.setFocusPolicy(Qt.ClickFocus)
-
-        self.editBehaviorStopBox = QLineEdit(self.centralwidget)
-        self.editBehaviorStopBox.setGeometry(QRect(770, 450, 61, 21))
-        self.editBehaviorStopBox.setText("")
-        self.editBehaviorStopBox.setObjectName("editBehaviorStopBox")
-        self.editBehaviorStopBox.setFocusPolicy(Qt.ClickFocus)
-
-        self.editBehaviorEnterButton = QPushButton(self.centralwidget)
-        self.editBehaviorEnterButton.setGeometry(QRect(850, 440, 113, 41))
-        self.editBehaviorEnterButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.editBehaviorEnterButton.setObjectName("editBehaviorEnterButton")
-
-        self.editBehaviorComboBox = QComboBox(self.centralwidget)
-        self.editBehaviorComboBox.setGeometry(QRect(460, 450, 210, 26))
-        self.editBehaviorComboBox.setCursor(QCursor(Qt.PointingHandCursor))
-        self.editBehaviorComboBox.setObjectName("editBehaviorComboBox")
-
+        ########################
         self.frame = QFrame(self.centralwidget)
         self.frame.setGeometry(QRect(30, 420, 370, 71))
         self.frame.setFrameShape(QFrame.StyledPanel)
@@ -137,12 +98,54 @@ class Ui_MainWindow(object):
         self.addBehaviorButton.setGeometry(QRect(250, 20, 113, 41))
         self.addBehaviorButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.addBehaviorButton.setObjectName("addBehaviorButton")
-
+        
+        ##########################
         self.editBehaviorFrame = QFrame(self.centralwidget)
         self.editBehaviorFrame.setGeometry(QRect(450, 420, 531, 71))
         self.editBehaviorFrame.setFrameShape(QFrame.StyledPanel)
         self.editBehaviorFrame.setFrameShadow(QFrame.Raised)
         self.editBehaviorFrame.setObjectName("editBehaviorFrame")
+
+        self.editBehaviorLabel = QLabel(self.editBehaviorFrame)
+        self.editBehaviorLabel.setGeometry(QtCore.QRect(70, 10, 69, 16))
+        self.editBehaviorLabel.setObjectName("editBehaviorLabel")
+
+        self.editBehaviorFrLabel = QLabel(self.editBehaviorFrame)
+        self.editBehaviorFrLabel.setGeometry(QtCore.QRect(260, 10, 101, 16))
+        self.editBehaviorFrLabel.setObjectName("editBehaviorFrLabel")
+
+        self.dashLabel = QLabel(self.editBehaviorFrame)
+        self.dashLabel.setGeometry(QtCore.QRect(300, 30, 16, 16))
+        self.dashLabel.setObjectName("dashLabel")
+
+        self.editBehaviorStartBox = QLineEdit(self.editBehaviorFrame)
+        self.editBehaviorStartBox.setGeometry(QtCore.QRect(230, 30, 61, 21))
+        self.editBehaviorStartBox.setText("")
+        self.editBehaviorStartBox.setObjectName("editBehaviorStartBox")
+        self.editBehaviorStartBox.setFocusPolicy(Qt.ClickFocus)
+
+        self.editBehaviorStopBox = QLineEdit(self.editBehaviorFrame)
+        self.editBehaviorStopBox.setGeometry(QtCore.QRect(320, 30, 61, 21))
+        self.editBehaviorStopBox.setText("")
+        self.editBehaviorStopBox.setObjectName("editBehaviorStopBox")
+        self.editBehaviorStopBox.setFocusPolicy(Qt.ClickFocus)
+
+        self.editBehaviorEnterButton = QPushButton(self.editBehaviorFrame)
+        self.editBehaviorEnterButton.setGeometry(QtCore.QRect(400, 20, 113, 41))
+        self.editBehaviorEnterButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.editBehaviorEnterButton.setObjectName("editBehaviorEnterButton")
+
+        self.editBehaviorComboBox = QComboBox(self.editBehaviorFrame)
+        self.editBehaviorComboBox.setGeometry(QtCore.QRect(10, 30, 210, 26))
+        self.editBehaviorComboBox.setCursor(QCursor(Qt.PointingHandCursor))
+        self.editBehaviorComboBox.setObjectName("editBehaviorComboBox")
+
+        ##########
+        self.divider1 = QFrame(self.centralwidget)
+        self.divider1.setGeometry(QRect(10, 390, 1421, 20))
+        self.divider1.setFrameShape(QFrame.HLine)
+        self.divider1.setFrameShadow(QFrame.Sunken)
+        self.divider1.setObjectName("divider1")
 
         self.divider2 = QFrame(self.centralwidget)
         self.divider2.setGeometry(QRect(10, 500, 971, 20))
@@ -247,43 +250,6 @@ class Ui_MainWindow(object):
         self.behaviorTable = behaviorTableWidget(self.horizontalLayoutWidget)
         self.tableLayout.addWidget(self.behaviorTable)
 
-        self.behaviorTable.raise_()
-        self.editBehaviorFrame.raise_()
-        self.horizontalLayoutWidget_2.raise_()
-        self.horizontalSlider.raise_()
-        self.playButton.raise_()
-        self.horizontalLayoutWidget_3.raise_()
-        self.horizontalLayoutWidget_4.raise_()
-        self.horizontalLayoutWidget_5.raise_()
-        self.stopButton.raise_()
-        self.editBehaviorLabel.raise_()
-        self.editBehaviorFrLabel.raise_()
-        self.divider1.raise_()
-        self.dashLabel.raise_()
-        self.editBehaviorStartBox.raise_()
-        self.editBehaviorStopBox.raise_()
-        self.editBehaviorEnterButton.raise_()
-        self.editBehaviorComboBox.raise_()
-        self.frame.raise_()
-        self.divider2.raise_()
-        self.savedBehaviorLabel.raise_()
-        self.savedBehaviorComboBox.raise_()
-        self.savedBehaviorEntryLabel.raise_()
-        self.horizontalLayoutWidget_6.raise_()
-        self.saveFilenameButton.raise_()
-        self.saveFilenameBox.raise_()
-        self.saveFilenameLabel.raise_()
-        self.horizontalLayoutWidget.raise_()
-        self.FrameLabel.raise_()
-        self.FramelcdNumber.raise_()
-        self.horizontalLayoutWidget_7.raise_()
-        self.frameLabel2.raise_()
-        self.entryNoComboBox.raise_()
-        self.tSNE_XmeanLabel.raise_()
-        self.tSNE_YmeanLabel.raise_()
-        self.saveBehaviorStartBox.raise_()
-        self.saveBehaviorStopBox.raise_()
-        self.saveDashLabel.raise_()
         # Menu Bar
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -300,9 +266,6 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionOpen)
         self.menubar.addAction(self.menuFile.menuAction())
         self.actionOpen.triggered.connect(self.openFile)
-
-        self.retranslateUi(MainWindow)
-        QMetaObject.connectSlotsByName(MainWindow)
 
         # Create Media Player
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -366,14 +329,16 @@ class Ui_MainWindow(object):
         self.timer.timeout.connect(self.updateLcdNumberContent)
         self.timer.start(1)
 
+        self.retranslateUi(MainWindow)
+        QMetaObject.connectSlotsByName(MainWindow)
+
     def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
+        _translate = QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.playButton.setText(_translate("MainWindow", "Play"))
         self.stopButton.setText(_translate("MainWindow", "Stop"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
-        # Part 2
         self.editBehaviorLabel.setText(_translate("MainWindow", "Behavior"))
         self.editBehaviorFrLabel.setText(_translate("MainWindow", "Frame Range"))
         self.dashLabel.setText(_translate("MainWindow", "-"))
