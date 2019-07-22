@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'VisualGUI2.ui'
-#
-# Created by: PyQt5 UI code generator 5.12.3
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
+
+from PyQt5.QtCore import QRect, Qt, QMetaObject, QTimer, QDir, QUrl
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QSlider, QPushButton, QLabel, QLCDNumber, 
+QFrame, QLineEdit, QComboBox, QMenuBar, QStatusBar, QAction, QFileDialog, QMenu)
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimediaWidgets import QVideoWidget
+
 from widgets.tsne_Graph import tsne_Graph
 from widgets.BP_Graph import BP_Graph
 from widgets.density_Graph import density_Graph
@@ -24,180 +23,227 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1438, 811)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(10, 10, 341, 311))
+
+        self.horizontalLayoutWidget_2 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_2.setGeometry(QRect(10, 10, 341, 311))
         self.horizontalLayoutWidget_2.setObjectName("horizontalLayoutWidget_2")
-        self.horizontalLayout_1 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_2)
+
+        self.horizontalLayout_1 = QHBoxLayout(self.horizontalLayoutWidget_2)
         self.horizontalLayout_1.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_1.setObjectName("horizontalLayout_1")
-        self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
-        self.horizontalSlider.setGeometry(QtCore.QRect(20, 330, 1401, 22))
-        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSlider.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.horizontalSlider = QSlider(self.centralwidget)
+        self.horizontalSlider.setGeometry(QRect(20, 330, 1401, 22))
+        self.horizontalSlider.setOrientation(Qt.Horizontal)
+        self.horizontalSlider.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.horizontalSlider.setObjectName("horizontalSlider")
-        self.playButton = QtWidgets.QPushButton(self.centralwidget)
-        self.playButton.setGeometry(QtCore.QRect(10, 360, 113, 32))
-        self.playButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.playButton = QPushButton(self.centralwidget)
+        self.playButton.setGeometry(QRect(10, 360, 113, 32))
+        self.playButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.playButton.setObjectName("playButton")
-        self.FrameLabel = QtWidgets.QLabel(self.centralwidget)
-        self.FrameLabel.setGeometry(QtCore.QRect(260, 370, 60, 16))
+
+        self.FrameLabel = QLabel(self.centralwidget)
+        self.FrameLabel.setGeometry(QRect(260, 370, 60, 16))
         self.FrameLabel.setObjectName("FrameLabel")
-        self.FramelcdNumber = QtWidgets.QLCDNumber(self.centralwidget)
-        self.FramelcdNumber.setGeometry(QtCore.QRect(310, 362, 91, 31))
+
+        self.FramelcdNumber = QLCDNumber(self.centralwidget)
+        self.FramelcdNumber.setGeometry(QRect(310, 362, 91, 31))
         self.FramelcdNumber.setObjectName("FramelcdNumber")
-        self.horizontalLayoutWidget_3 = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(370, 10, 341, 311))
+
+        self.horizontalLayoutWidget_3 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_3.setGeometry(QRect(370, 10, 341, 311))
         self.horizontalLayoutWidget_3.setObjectName("horizontalLayoutWidget_3")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_3)
+
+        self.horizontalLayout_2 = QHBoxLayout(self.horizontalLayoutWidget_3)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.horizontalLayoutWidget_4 = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_4.setGeometry(QtCore.QRect(730, 10, 341, 311))
+        self.horizontalLayoutWidget_4 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_4.setGeometry(QRect(730, 10, 341, 311))
         self.horizontalLayoutWidget_4.setObjectName("horizontalLayoutWidget_4")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_4)
+        self.horizontalLayout_3 = QHBoxLayout(self.horizontalLayoutWidget_4)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.horizontalLayoutWidget_5 = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_5.setGeometry(QtCore.QRect(1090, 10, 341, 311))
+        self.horizontalLayoutWidget_5 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_5.setGeometry(QRect(1090, 10, 341, 311))
         self.horizontalLayoutWidget_5.setObjectName("horizontalLayoutWidget_5")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_5)
+        self.horizontalLayout_4 = QHBoxLayout(self.horizontalLayoutWidget_5)
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        # Part 2
-        self.stopButton = QtWidgets.QPushButton(self.centralwidget)
-        self.stopButton.setGeometry(QtCore.QRect(130, 360, 113, 32))
-        self.stopButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.stopButton = QPushButton(self.centralwidget)
+        self.stopButton.setGeometry(QRect(130, 360, 113, 32))
+        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.stopButton.setObjectName("stopButton")
-        self.editBehaviorLabel = QtWidgets.QLabel(self.centralwidget)
-        self.editBehaviorLabel.setGeometry(QtCore.QRect(540, 430, 69, 16))
+
+        self.editBehaviorLabel = QLabel(self.centralwidget)
+        self.editBehaviorLabel.setGeometry(QRect(540, 430, 69, 16))
         self.editBehaviorLabel.setObjectName("editBehaviorLabel")
-        self.editBehaviorFrLabel = QtWidgets.QLabel(self.centralwidget)
-        self.editBehaviorFrLabel.setGeometry(QtCore.QRect(720, 430, 101, 16))
+
+        self.editBehaviorFrLabel = QLabel(self.centralwidget)
+        self.editBehaviorFrLabel.setGeometry(QRect(720, 430, 101, 16))
         self.editBehaviorFrLabel.setObjectName("editBehaviorFrLabel")
-        self.divider1 = QtWidgets.QFrame(self.centralwidget)
-        self.divider1.setGeometry(QtCore.QRect(10, 390, 1421, 20))
-        self.divider1.setFrameShape(QtWidgets.QFrame.HLine)
-        self.divider1.setFrameShadow(QtWidgets.QFrame.Sunken)
+
+        self.divider1 = QFrame(self.centralwidget)
+        self.divider1.setGeometry(QRect(10, 390, 1421, 20))
+        self.divider1.setFrameShape(QFrame.HLine)
+        self.divider1.setFrameShadow(QFrame.Sunken)
         self.divider1.setObjectName("divider1")
-        self.dashLabel = QtWidgets.QLabel(self.centralwidget)
-        self.dashLabel.setGeometry(QtCore.QRect(750, 450, 16, 16))
+
+        self.dashLabel = QLabel(self.centralwidget)
+        self.dashLabel.setGeometry(QRect(750, 450, 16, 16))
         self.dashLabel.setObjectName("dashLabel")
-        self.editBehaviorStartBox = QtWidgets.QLineEdit(self.centralwidget)
-        self.editBehaviorStartBox.setGeometry(QtCore.QRect(680, 450, 61, 21))
+
+        self.editBehaviorStartBox = QLineEdit(self.centralwidget)
+        self.editBehaviorStartBox.setGeometry(QRect(680, 450, 61, 21))
         self.editBehaviorStartBox.setText("")
         self.editBehaviorStartBox.setObjectName("editBehaviorStartBox")
-        self.editBehaviorStopBox = QtWidgets.QLineEdit(self.centralwidget)
-        self.editBehaviorStopBox.setGeometry(QtCore.QRect(770, 450, 61, 21))
+        self.editBehaviorStartBox.setFocusPolicy(Qt.ClickFocus)
+
+        self.editBehaviorStopBox = QLineEdit(self.centralwidget)
+        self.editBehaviorStopBox.setGeometry(QRect(770, 450, 61, 21))
         self.editBehaviorStopBox.setText("")
         self.editBehaviorStopBox.setObjectName("editBehaviorStopBox")
-        self.editBehaviorEnterButton = QtWidgets.QPushButton(self.centralwidget)
-        self.editBehaviorEnterButton.setGeometry(QtCore.QRect(850, 440, 113, 41))
-        self.editBehaviorEnterButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.editBehaviorStopBox.setFocusPolicy(Qt.ClickFocus)
+
+        self.editBehaviorEnterButton = QPushButton(self.centralwidget)
+        self.editBehaviorEnterButton.setGeometry(QRect(850, 440, 113, 41))
+        self.editBehaviorEnterButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.editBehaviorEnterButton.setObjectName("editBehaviorEnterButton")
-        self.editBehaviorComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.editBehaviorComboBox.setGeometry(QtCore.QRect(460, 450, 210, 26))
-        self.editBehaviorComboBox.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.editBehaviorComboBox = QComboBox(self.centralwidget)
+        self.editBehaviorComboBox.setGeometry(QRect(460, 450, 210, 26))
+        self.editBehaviorComboBox.setCursor(QCursor(Qt.PointingHandCursor))
         self.editBehaviorComboBox.setObjectName("editBehaviorComboBox")
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(30, 420, 370, 71))
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+
+        self.frame = QFrame(self.centralwidget)
+        self.frame.setGeometry(QRect(30, 420, 370, 71))
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
         self.frame.setObjectName("frame")
-        self.addBehaviorLabel = QtWidgets.QLabel(self.frame)
-        self.addBehaviorLabel.setGeometry(QtCore.QRect(10, 30, 60, 16))
+
+        self.addBehaviorLabel = QLabel(self.frame)
+        self.addBehaviorLabel.setGeometry(QRect(10, 30, 60, 16))
         self.addBehaviorLabel.setObjectName("addBehaviorLabel")
-        self.addBehaviorLineEdit = QtWidgets.QLineEdit(self.frame)
-        self.addBehaviorLineEdit.setGeometry(QtCore.QRect(80, 30, 171, 21))
+
+        self.addBehaviorLineEdit = QLineEdit(self.frame)
+        self.addBehaviorLineEdit.setGeometry(QRect(80, 30, 171, 21))
         self.addBehaviorLineEdit.setObjectName("addBehaviorLineEdit")
-        self.addBehaviorButton = QtWidgets.QPushButton(self.frame)
-        self.addBehaviorButton.setGeometry(QtCore.QRect(250, 20, 113, 41))
-        self.addBehaviorButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.addBehaviorLineEdit.setFocusPolicy(Qt.ClickFocus)
+
+        self.addBehaviorButton = QPushButton(self.frame)
+        self.addBehaviorButton.setGeometry(QRect(250, 20, 113, 41))
+        self.addBehaviorButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.addBehaviorButton.setObjectName("addBehaviorButton")
-        self.editBehaviorFrame = QtWidgets.QFrame(self.centralwidget)
-        self.editBehaviorFrame.setGeometry(QtCore.QRect(450, 420, 531, 71))
-        self.editBehaviorFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.editBehaviorFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+
+        self.editBehaviorFrame = QFrame(self.centralwidget)
+        self.editBehaviorFrame.setGeometry(QRect(450, 420, 531, 71))
+        self.editBehaviorFrame.setFrameShape(QFrame.StyledPanel)
+        self.editBehaviorFrame.setFrameShadow(QFrame.Raised)
         self.editBehaviorFrame.setObjectName("editBehaviorFrame")
-        self.divider2 = QtWidgets.QFrame(self.centralwidget)
-        self.divider2.setGeometry(QtCore.QRect(10, 500, 971, 20))
-        self.divider2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.divider2.setFrameShadow(QtWidgets.QFrame.Sunken)
+
+        self.divider2 = QFrame(self.centralwidget)
+        self.divider2.setGeometry(QRect(10, 500, 971, 20))
+        self.divider2.setFrameShape(QFrame.HLine)
+        self.divider2.setFrameShadow(QFrame.Sunken)
         self.divider2.setObjectName("divider2")
-        self.savedBehaviorLabel = QtWidgets.QLabel(self.centralwidget)
-        self.savedBehaviorLabel.setGeometry(QtCore.QRect(70, 530, 101, 16))
+
+        self.savedBehaviorLabel = QLabel(self.centralwidget)
+        self.savedBehaviorLabel.setGeometry(QRect(70, 530, 101, 16))
         self.savedBehaviorLabel.setObjectName("savedBehaviorLabel")
-        self.savedBehaviorComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.savedBehaviorComboBox.setGeometry(QtCore.QRect(10, 550, 211, 26))
-        self.savedBehaviorComboBox.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.savedBehaviorComboBox = QComboBox(self.centralwidget)
+        self.savedBehaviorComboBox.setGeometry(QRect(10, 550, 211, 26))
+        self.savedBehaviorComboBox.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.savedBehaviorComboBox.setObjectName("savedBehaviorComboBox")
-        self.savedBehaviorEntryLabel = QtWidgets.QLabel(self.centralwidget)
-        self.savedBehaviorEntryLabel.setGeometry(QtCore.QRect(290, 530, 60, 16))
+
+        self.savedBehaviorEntryLabel = QLabel(self.centralwidget)
+        self.savedBehaviorEntryLabel.setGeometry(QRect(290, 530, 60, 16))
         self.savedBehaviorEntryLabel.setObjectName("savedBehaviorEntryLabel")
-        self.horizontalLayoutWidget_6 = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_6.setGeometry(QtCore.QRect(400, 530, 271, 231))
+
+        self.horizontalLayoutWidget_6 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_6.setGeometry(QRect(400, 530, 271, 231))
         self.horizontalLayoutWidget_6.setObjectName("horizontalLayoutWidget_6")
-        self.saveFilenameVideoLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_6)
+
+        self.saveFilenameVideoLayout = QHBoxLayout(self.horizontalLayoutWidget_6)
         self.saveFilenameVideoLayout.setContentsMargins(0, 0, 0, 0)
         self.saveFilenameVideoLayout.setObjectName("saveFilenameVideoLayout")
-        self.saveFilenameButton = QtWidgets.QPushButton(self.centralwidget)
-        self.saveFilenameButton.setGeometry(QtCore.QRect(260, 690, 111, 41))
-        self.saveFilenameButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.saveFilenameButton = QPushButton(self.centralwidget)
+        self.saveFilenameButton.setGeometry(QRect(260, 690, 111, 41))
+        self.saveFilenameButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.saveFilenameButton.setObjectName("saveFilenameButton")
-        self.saveFilenameBox = QtWidgets.QLineEdit(self.centralwidget)
-        self.saveFilenameBox.setGeometry(QtCore.QRect(10, 700, 241, 21))
+
+        self.saveFilenameBox = QLineEdit(self.centralwidget)
+        self.saveFilenameBox.setGeometry(QRect(10, 700, 241, 21))
         self.saveFilenameBox.setObjectName("saveFilenameBox")
-        self.saveFilenameLabel = QtWidgets.QLabel(self.centralwidget)
-        self.saveFilenameLabel.setGeometry(QtCore.QRect(20, 680, 231, 16))
-        self.saveFilenameLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.saveFilenameBox.setFocusPolicy(Qt.ClickFocus)
+
+        self.saveFilenameLabel = QLabel(self.centralwidget)
+        self.saveFilenameLabel.setGeometry(QRect(20, 680, 231, 16))
+        self.saveFilenameLabel.setAlignment(Qt.AlignCenter)
         self.saveFilenameLabel.setObjectName("saveFilenameLabel")
-        self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(990, 420, 431, 341))
+
+        self.horizontalLayoutWidget = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget.setGeometry(QRect(990, 420, 431, 341))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.FrameLabel = QtWidgets.QLabel(self.centralwidget)
-        self.FrameLabel.setGeometry(QtCore.QRect(260, 370, 60, 16))
+
+        self.FrameLabel = QLabel(self.centralwidget)
+        self.FrameLabel.setGeometry(QRect(260, 370, 60, 16))
         self.FrameLabel.setObjectName("FrameLabel")
-        self.FramelcdNumber = QtWidgets.QLCDNumber(self.centralwidget)
-        self.FramelcdNumber.setGeometry(QtCore.QRect(310, 362, 91, 31))
+
+        self.FramelcdNumber = QLCDNumber(self.centralwidget)
+        self.FramelcdNumber.setGeometry(QRect(310, 362, 91, 31))
         self.FramelcdNumber.setObjectName("FramelcdNumber")
-        self.horizontalLayoutWidget_7 = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_7.setGeometry(QtCore.QRect(690, 530, 271, 231))
+
+        self.horizontalLayoutWidget_7 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_7.setGeometry(QRect(690, 530, 271, 231))
         self.horizontalLayoutWidget_7.setObjectName("horizontalLayoutWidget_7")
-        self.totalBehaviorLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_7)
+
+        self.totalBehaviorLayout = QHBoxLayout(self.horizontalLayoutWidget_7)
         self.totalBehaviorLayout.setContentsMargins(0, 0, 0, 0)
         self.totalBehaviorLayout.setObjectName("totalBehaviorLayout")
-        self.frameLabel2 = QtWidgets.QLabel(self.centralwidget)
-        self.frameLabel2.setGeometry(QtCore.QRect(80, 590, 41, 16))
+
+        self.frameLabel2 = QLabel(self.centralwidget)
+        self.frameLabel2.setGeometry(QRect(80, 590, 41, 16))
         self.frameLabel2.setObjectName("frameLabel2")
-        self.entryNoComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.entryNoComboBox.setGeometry(QtCore.QRect(260, 550, 121, 26))
+
+        self.entryNoComboBox = QComboBox(self.centralwidget)
+        self.entryNoComboBox.setGeometry(QRect(260, 550, 121, 26))
         self.entryNoComboBox.setObjectName("entryNoComboBox")
-        self.tSNE_XmeanLabel = QtWidgets.QLabel(self.centralwidget)
-        self.tSNE_XmeanLabel.setGeometry(QtCore.QRect(30, 620, 321, 16))
+
+        self.tSNE_XmeanLabel = QLabel(self.centralwidget)
+        self.tSNE_XmeanLabel.setGeometry(QRect(30, 620, 321, 16))
         self.tSNE_XmeanLabel.setObjectName("tSNE_XmeanLabel")
-        self.tSNE_YmeanLabel = QtWidgets.QLabel(self.centralwidget)
-        self.tSNE_YmeanLabel.setGeometry(QtCore.QRect(30, 640, 321, 16))
+        self.tSNE_YmeanLabel = QLabel(self.centralwidget)
+        self.tSNE_YmeanLabel.setGeometry(QRect(30, 640, 321, 16))
         self.tSNE_YmeanLabel.setObjectName("tSNE_YmeanLabel")
-        self.saveBehaviorStartBox = QtWidgets.QLineEdit(self.centralwidget)
+
+        self.saveBehaviorStartBox = QLineEdit(self.centralwidget)
         self.saveBehaviorStartBox.setEnabled(True)
-        self.saveBehaviorStartBox.setGeometry(QtCore.QRect(140, 590, 61, 21))
+        self.saveBehaviorStartBox.setGeometry(QRect(140, 590, 61, 21))
         self.saveBehaviorStartBox.setText("")
         self.saveBehaviorStartBox.setObjectName("saveBehaviorStartBox")
-        self.saveBehaviorStopBox = QtWidgets.QLineEdit(self.centralwidget)
-        self.saveBehaviorStopBox.setGeometry(QtCore.QRect(230, 590, 61, 21))
+        self.saveBehaviorStartBox.setFocusPolicy(Qt.ClickFocus)
+        self.saveBehaviorStopBox = QLineEdit(self.centralwidget)
+        self.saveBehaviorStopBox.setGeometry(QRect(230, 590, 61, 21))
         self.saveBehaviorStopBox.setText("")
         self.saveBehaviorStopBox.setObjectName("saveBehaviorStopBox")
-        self.saveDashLabel = QtWidgets.QLabel(self.centralwidget)
-        self.saveDashLabel.setGeometry(QtCore.QRect(210, 590, 16, 16))
+        self.saveBehaviorStopBox.setFocusPolicy(Qt.ClickFocus)
+
+        self.saveDashLabel = QLabel(self.centralwidget)
+        self.saveDashLabel.setGeometry(QRect(210, 590, 16, 16))
         self.saveDashLabel.setObjectName("saveDashLabel")
 
-        self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(990, 420, 431, 341))
+        self.horizontalLayoutWidget = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget.setGeometry(QRect(990, 420, 431, 341))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.tableLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.tableLayout = QHBoxLayout(self.horizontalLayoutWidget)
         self.tableLayout.setContentsMargins(0, 0, 0, 0)
         self.tableLayout.setObjectName("tableLayout")
+
         self.behaviorTable = behaviorTableWidget(self.horizontalLayoutWidget)
         self.tableLayout.addWidget(self.behaviorTable)
 
@@ -240,32 +286,33 @@ class Ui_MainWindow(object):
         self.saveDashLabel.raise_()
         # Menu Bar
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1438, 22))
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setGeometry(QRect(0, 0, 1438, 22))
         self.menubar.setObjectName("menubar")
-        self.menuFile = QtWidgets.QMenu(self.menubar)
+        self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.actionOpen = QtWidgets.QAction(MainWindow)
+        self.actionOpen = QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.menuFile.addAction(self.actionOpen)
         self.menubar.addAction(self.menuFile.menuAction())
         self.actionOpen.triggered.connect(self.openFile)
 
         self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        QMetaObject.connectSlotsByName(MainWindow)
 
         # Create Media Player
-        self.mediaPlayer = QtMultimedia.QMediaPlayer(None, QtMultimedia.QMediaPlayer.VideoSurface)
-        videoWidget = QtMultimediaWidgets.QVideoWidget()
+        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        videoWidget = QVideoWidget()
         self.horizontalLayout_1.addWidget(videoWidget)
         self.mediaPlayer.setVideoOutput(videoWidget)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.setNotifyInterval(1)
+        self.mediaPlayer.setPlaybackRate(0.1)
 
         # Append BP graph
         self.BPGraph = BP_Graph()
@@ -307,9 +354,15 @@ class Ui_MainWindow(object):
         self.editBehaviorEnterButton.clicked.connect(self.editBehavior)
         # connect slider
         self.horizontalSlider.sliderMoved.connect(self.setPosition)
+        self.horizontalSlider.sliderMoved.connect(self.FramelcdNumber.display)
+        # connect keys
+        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Left"), self.centralwidget, self.key_left)
+        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Right"), self.centralwidget, self.key_right)
+
+
 
         # timer to update frame
-        self.timer = QtCore.QTimer(self.FramelcdNumber)
+        self.timer = QTimer(self.FramelcdNumber)
         self.timer.timeout.connect(self.updateLcdNumberContent)
         self.timer.start(1)
 
@@ -343,8 +396,8 @@ class Ui_MainWindow(object):
 
 
     def openFile(self):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(
-            None, "Select Directory", QtCore.QDir.homePath() )
+        folder = QFileDialog.getExistingDirectory(
+            None, "Select Directory", QDir.homePath() )
         if folder != '':
             filename = folder.split('/')[-1]
             # total density plot
@@ -364,8 +417,8 @@ class Ui_MainWindow(object):
             self.tsneGraph.update_graph(position=1)
             self.tsnecanvas.draw()
             # media player
-            self.mediaPlayer.setMedia(QtMultimedia.QMediaContent(
-                QtCore.QUrl.fromLocalFile(folder+'/'+filename+'.avi')))
+            self.mediaPlayer.setMedia(QMediaContent(
+                QUrl.fromLocalFile(folder+'/'+filename+'.avi')))
             # behavior table
             self.behaviorTable.set_newfile(folder+'/EMBED.mat')
     # Part 1
@@ -414,6 +467,10 @@ class Ui_MainWindow(object):
         if behavior and startFr and stopFr:
             self.behaviorTable.add_row(behavior, startFr, stopFr)
         pass
+    def key_left(self):
+        self.setPosition(self.mediaPlayer.position()-1)
+    def key_right(self):
+        self.setPosition(self.mediaPlayer.position()+1)
 
 
 
