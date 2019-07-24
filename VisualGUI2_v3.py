@@ -232,7 +232,7 @@ class Ui_MainWindow(object):
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.setNotifyInterval(1)
-        self.mediaPlayer.setPlaybackRate(0.1)
+        self.mediaPlayer.setPlaybackRate(0.3)
 
         # Append BP graph
         self.BPGraph = BP_Graph()

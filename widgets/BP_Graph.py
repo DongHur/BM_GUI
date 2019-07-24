@@ -14,7 +14,7 @@ class BP_Graph(Figure):
     def init_plot(self):
         self.clear()
         ax = self.add_subplot(111)
-        ax.plot([], '*-')
+        ax.plot([], 'o-')
         ax.set_title('Ant Body Point Graph', fontsize=8);
         ax.tick_params(axis='both', labelsize=6);
         pass
@@ -35,16 +35,20 @@ class BP_Graph(Figure):
         ax = self.add_subplot(111)
         # plot ant points for specific time point t; specific to out setup with 30bp ants
         # data format: num_bp x (X_coord, Y_coord) x t
-        ax.scatter(self.data[:,0,frame], self.data[:,1,frame])
-        ax.plot(self.data[0:4,0,frame], self.data[0:4,1,frame])
-        ax.plot(self.data[4:8,0,frame], self.data[4:8,1,frame])
-        ax.plot(self.data[8:11,0,frame], self.data[8:11,1,frame])
-        ax.plot(self.data[11:14,0,frame], self.data[11:14,1,frame])
-        ax.plot(self.data[14:17,0,frame], self.data[14:17,1,frame])
-        ax.plot(self.data[17:21,0,frame], self.data[17:21,1,frame])
-        ax.plot(self.data[21:24,0,frame], self.data[21:24,1,frame])
-        ax.plot(self.data[24:27,0,frame], self.data[24:27,1,frame])
-        ax.plot(self.data[27:30,0,frame], self.data[27:30,1,frame])
+        # ax.scatter(self.data[:,0,frame], self.data[:,1,frame])
+        # graph parameters
+        marker = 'o'
+        s=4
+        # plot graph
+        ax.plot(self.data[0:4,0,frame], self.data[0:4,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[4:8,0,frame], self.data[4:8,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[8:11,0,frame], self.data[8:11,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[11:14,0,frame], self.data[11:14,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[14:17,0,frame], self.data[14:17,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[17:21,0,frame], self.data[17:21,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[21:24,0,frame], self.data[21:24,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[24:27,0,frame], self.data[24:27,1,frame], marker=marker, markersize=s)
+        ax.plot(self.data[27:30,0,frame], self.data[27:30,1,frame], marker=marker, markersize=s)
         ax.set_xlim(left=-200, right=200)
         ax.set_ylim(bottom=-200, top=200)
         ax.set_aspect('equal', 'box')

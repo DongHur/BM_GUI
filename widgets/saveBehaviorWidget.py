@@ -141,7 +141,6 @@ class saveBehaviorWidget(QWidget):
             self.entryNoComboBox.clear()
             print("ENTRY NO: ", num_entry[0])
             for i in range(num_entry[0]):
-                print('HELLO ', i)
                 self.entryNoComboBox.addItem(str(i+1)) 
             self.entryNoComboBox.setCurrentIndex(0)
         pass
@@ -165,7 +164,7 @@ class saveBehaviorWidget(QWidget):
             print("DATA: ", data)
             print()
             # update parameter
-            self.saveFilenameBox.setText(dir_path)
+            self.saveFilenameBox.setText(dir_path+"/"+behavior+"_"+str(entry_idx+1)+".mp4")
             self.saveBehaviorStartBox.setText(str(data[1]))
             self.saveBehaviorStopBox.setText(str(data[2]))
             self.tSNE_XmeanLabel.setText("tSNE X (mean): "+format(data[3],'.4f'))
@@ -182,7 +181,7 @@ class saveBehaviorWidget(QWidget):
         if fr_start < fr_stop:
             self.timer = QTimer()
             self.timer.timeout.connect(self.iter_video)
-            self.timer.start(1)
+            self.timer.start(100)
 
         pass
     def iter_video(self):
@@ -194,45 +193,47 @@ class saveBehaviorWidget(QWidget):
             self.pos_iter += 1
         pass
     def save_video(self):
+        # parameter for video
+        filepath = self.saveFilenameBox.text()
+        start = int(self.saveBehaviorStartBox.text())
+        stop = int(self.saveBehaviorStopBox.text())
+        fig_title = self.savedBehaviorComboBox.currentText() + ": Entry #" + self.entryNoComboBox.currentText()
+        # creates animation writer
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=15, metadata=dict(arist="Dong Hur"), bitrate=1800)
         # create animation plot
+        self.lines = []
         fig = plt.figure()
-        line, = plt.plot([],[],'r-')
-        plt.xlim(left=-200, right=200)
-        plt.ylim(bottom=-200, top=200)
+        ax1 = plt.axes(xlim=(-200,200), ylim=(-200,200))
+        line, = ax1.plot([],[],'-o')
         plt.gca().set_aspect('equal', 'box')
-        plt.title('Ant Body Point Graph', fontsize=8)
+        plt.title(fig_title, fontsize=8)
         plt.tick_params(axis='both', labelsize=6)
-        # parameter for video
-        start = int(self.saveBehaviorStartBox.text())
-        stop = int(self.saveBehaviorStopBox.text())
-        print("START: ", start)
-        line_ani = animation.FuncAnimation(fig, self.update_graph, np.arange(start, stop), 
-            fargs=(self.smallBPGraph.data, line), interval=50, blit=True)
-        print("I AM HERE")
-        line_ani.save('TEST.mp4', writer=writer)
-        # self.saveFilenameBox.text()
-        # self.entryNoComboBox
-        # self.saveBehaviorStartBox
-        # self.saveBehaviorStopBox
-        # self.saveFilenameBox
-        # self.saveFilenameButton
+        for index in range(9):
+            lobj = ax1.plot([],[], '-o')[0]
+            self.lines.append(lobj)
+        # start animating through each iteration
+        line_ani = animation.FuncAnimation(fig, self.update_graph,  init_func=self.init_graph,
+            frames=np.arange(start, stop), fargs=(self.smallBPGraph.data, self.lines), interval=50, blit=True)
+        line_ani.save(filepath, writer=writer)
         pass
-    def update_graph(self, frame, data, line):
+    def init_graph(self):
+        for line in self.lines:
+            line.set_data([],[])
+        return self.lines
+    def update_graph(self, frame, data, lines):
         # plot ant points for specific time point t; specific to out setup with 30bp ants
         # data format: num_bp x (X_coord, Y_coord) x t
-        # line.scatter(data[:,0,frame], data[:,1,frame])
-        line.set_data(data[0:4,0,frame], data[0:4,1,frame])
-        line.set_data(data[4:8,0,frame], data[4:8,1,frame])
-        line.set_data(data[8:11,0,frame], data[8:11,1,frame])
-        line.set_data(data[11:14,0,frame], data[11:14,1,frame])
-        line.set_data(data[14:17,0,frame], data[14:17,1,frame])
-        line.set_data(data[17:21,0,frame], data[17:21,1,frame])
-        line.set_data(data[21:24,0,frame], data[21:24,1,frame])
-        line.set_data(data[24:27,0,frame], data[24:27,1,frame])
-        line.set_data(data[27:30,0,frame], data[27:30,1,frame])
-        return line,        
+        lines[0].set_data(data[0:4,0,frame], data[0:4,1,frame])
+        lines[1].set_data(data[4:8,0,frame], data[4:8,1,frame])
+        lines[2].set_data(data[8:11,0,frame], data[8:11,1,frame])
+        lines[3].set_data(data[11:14,0,frame], data[11:14,1,frame])
+        lines[4].set_data(data[14:17,0,frame], data[14:17,1,frame])
+        lines[5].set_data(data[17:21,0,frame], data[17:21,1,frame])
+        lines[6].set_data(data[21:24,0,frame], data[21:24,1,frame])
+        lines[7].set_data(data[24:27,0,frame], data[24:27,1,frame])
+        lines[8].set_data(data[27:30,0,frame], data[27:30,1,frame])
+        return lines        
 
 if __name__ == "__main__":
     import sys

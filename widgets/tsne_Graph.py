@@ -34,13 +34,15 @@ class tsne_Graph(Figure):
         self.YLim = ylim
         pass
     def update_graph(self, position):
-        # self.plt.setData(x=self.data[:,0], y=self.data[:,1])
+        # graph parameter
+        s=7
+        # create tsne plot
         frame = int(self.num_frame*position/self.duration)-1 # index is one less
         self.clear()
         ax = self.add_subplot(111)
         if frame>0:
-            ax.scatter(self.data[:frame-1, 0], self.data[:frame-1, 1], c='b', alpha=0.07)
-        ax.scatter(self.data[frame, 0], self.data[frame, 1], c='r')
+            ax.scatter(self.data[:frame-1, 0], self.data[:frame-1, 1], c='b', alpha=0.07, s=s)
+        ax.scatter(self.data[frame, 0], self.data[frame, 1], c='r', s=s)
         ax.set_xlim(left=self.XLim[0], right=self.XLim[1])
         ax.set_ylim(bottom=self.YLim[0], top=self.YLim[1])
         ax.set_aspect('equal', 'datalim')
