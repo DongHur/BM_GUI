@@ -8,13 +8,13 @@ from PyQt5.QtGui import QCursor, QFont, QColor
 from PyQt5.QtWidgets import (QAbstractItemView, QTableWidgetItem)
 
 class behaviorTableWidget(QtWidgets.QTableWidget):
-    def __init__(self, con, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(behaviorTableWidget, self).__init__()
         self.data = {}
         self.tSNE = None
         self.filepath = None
         self.num_frame = 0
-        self.con = con
+        self.con = None
         self.initialize()
 
     def initialize(self):
@@ -74,6 +74,9 @@ class behaviorTableWidget(QtWidgets.QTableWidget):
         self.num_frame = self.tSNE.shape[0]
         pass
 
+    def connect_data(self, con):
+        self.con = con
+        pass
     def add_row(self, behavior, startFr, stopFr):
         if self.tSNE is not None:
             # format incoming data

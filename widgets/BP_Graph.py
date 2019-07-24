@@ -22,6 +22,7 @@ class BP_Graph(Figure):
         self.bp_filepath = filepath
         self.data = np.load(filepath) # (30,2,5901)
         self.num_frame = self.data.shape[2]
+        print("BP_GRAPH Data: ", self.data.shape)
         pass
     def set_duration(self, duration):
         self.duration = duration

@@ -17,7 +17,7 @@ class tsne_Graph(Figure):
     def init_plot(self):
         self.clear()
         ax = self.add_subplot(111)
-        ax.plot([], '*-')
+        ax.plot([])
         ax.set_title('tSNE Projection', fontsize=8);
         ax.tick_params(axis='both', labelsize=6);
         pass

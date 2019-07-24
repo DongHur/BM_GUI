@@ -1,10 +1,14 @@
+import numpy as np
+import sqlite3
+import sys
+
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 
-from PyQt5.QtCore import QRect, Qt, QMetaObject, QTimer, QDir, QUrl, QCoreApplication
+from PyQt5.QtCore import QRect, Qt, QMetaObject, QTimer, QDir, QUrl, QCoreApplication, QObject, pyqtSignal, QThread, pyqtSlot
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QSlider, QPushButton, QLabel, QLCDNumber, 
+from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QSlider, QPushButton, QLabel, 
 QFrame, QLineEdit, QComboBox, QMenuBar, QStatusBar, QAction, QFileDialog, QMenu)
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaMetaData
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 from widgets.tsne_Graph import tsne_Graph
@@ -17,14 +21,24 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-import sqlite3
-import sys
+class Worker(QObject):
+    play = pyqtSignal()
+    pause = pyqtSignal()
+    def __init__(self,*args, **kwargs):
+        super(Worker, self).__init__()
+
+    @pyqtSlot()
+    def worker_play(self):
+        self.play.emit()
+    @pyqtSlot()
+    def worker_pause(self):
+        self.pause.emit()
 
 class Ui_MainWindow(object):
     def __init__(self, *args, **kwargs):
         super(Ui_MainWindow, self).__init__()
         self.fr = 50
-        self.con = sqlite3.connect('GUI_Data.db')
+        self.con = None
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -52,19 +66,20 @@ class Ui_MainWindow(object):
         self.playButton.setObjectName("playButton")
 
         self.FrameLabel = QLabel(self.centralwidget)
-        self.FrameLabel.setGeometry(QRect(260, 370, 60, 16))
+        self.FrameLabel.setGeometry(QRect(260, 365, 60, 16))
         self.FrameLabel.setObjectName("FrameLabel")
 
-        self.FramelcdNumber = QLCDNumber(self.centralwidget)
-        self.FramelcdNumber.setGeometry(QRect(310, 362, 91, 31))
-        self.FramelcdNumber.setObjectName("FramelcdNumber")
+        self.FrameNumberLineEdit = QLineEdit(self.centralwidget)
+        self.FrameNumberLineEdit.setGeometry(QRect(310, 365, 91, 21))
+        self.FrameNumberLineEdit.setObjectName("FrameNumberLineEdit")
+        self.FrameNumberLineEdit.setFocusPolicy(Qt.ClickFocus)
 
         self.frameBackButton = QPushButton(self.centralwidget)
-        self.frameBackButton.setGeometry(QRect(410, 360, 70, 35))
+        self.frameBackButton.setGeometry(QRect(410, 360, 50, 32))
         self.frameBackButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.frameBackButton.setObjectName("frameBackButton")
         self.frameFrontButton = QPushButton(self.centralwidget)
-        self.frameFrontButton.setGeometry(QRect(480, 360, 70, 35))
+        self.frameFrontButton.setGeometry(QRect(460, 360, 50, 32))
         self.frameFrontButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.frameFrontButton.setObjectName("frameFrontButton")
         self.frameFrontButton.clicked.connect(self.key_right)
@@ -177,17 +192,13 @@ class Ui_MainWindow(object):
         self.saveHorizWidget = QHBoxLayout(self.saveLayoutWidget)
         self.saveHorizWidget.setContentsMargins(0, 0, 0, 0)
         self.saveHorizWidget.setObjectName("saveHorizWidget")
-        self.saveBehaviorWidget = saveBehaviorWidget(self.con)
+        self.saveBehaviorWidget = saveBehaviorWidget()
         self.saveHorizWidget.addWidget(self.saveBehaviorWidget)
         #******************
 
         self.horizontalLayoutWidget = QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setGeometry(QRect(990, 420, 431, 341))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-
-        self.FramelcdNumber = QLCDNumber(self.centralwidget)
-        self.FramelcdNumber.setGeometry(QRect(310, 362, 91, 31))
-        self.FramelcdNumber.setObjectName("FramelcdNumber")
 
         self.horizontalLayoutWidget_7 = QWidget(self.centralwidget)
         self.horizontalLayoutWidget_7.setGeometry(QRect(690, 530, 280, 230))
@@ -204,7 +215,7 @@ class Ui_MainWindow(object):
         self.tableLayout.setContentsMargins(0, 0, 0, 0)
         self.tableLayout.setObjectName("tableLayout")
 
-        self.behaviorTable = behaviorTableWidget(self.con)
+        self.behaviorTable = behaviorTableWidget()
         self.tableLayout.addWidget(self.behaviorTable)
 
         # Menu Bar
@@ -218,11 +229,18 @@ class Ui_MainWindow(object):
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        # Upload Data
+        self.uploadDataOpen = QAction(MainWindow)
+        self.uploadDataOpen.setObjectName("uploadDataOpen")
+        self.menuFile.addAction(self.uploadDataOpen)
+        self.uploadDataOpen.triggered.connect(self.uploadData)
+        # Open Tab
         self.actionOpen = QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.menuFile.addAction(self.actionOpen)
-        self.menubar.addAction(self.menuFile.menuAction())
         self.actionOpen.triggered.connect(self.openFile)
+        # Append Action
+        self.menubar.addAction(self.menuFile.menuAction())
 
         # Create Media Player
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -231,7 +249,7 @@ class Ui_MainWindow(object):
         self.mediaPlayer.setVideoOutput(videoWidget)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
-        self.mediaPlayer.setNotifyInterval(1)
+        self.mediaPlayer.setNotifyInterval(int(1000/self.fr))
         self.mediaPlayer.setPlaybackRate(0.3)
 
         # Append BP graph
@@ -262,24 +280,25 @@ class Ui_MainWindow(object):
         self.addBehaviorLineEdit.returnPressed.connect(self.addBehavior)
         self.editBehaviorStopBox.returnPressed.connect(self.editBehavior)
 
+        # create worker
+        self.worker = Worker()
+        self.thread = QThread()
+        self.thread.start()
+        self.worker.moveToThread(self.thread)
+        self.worker.play.connect(self.play)
+        self.worker.pause.connect(self.pause)
         # connect button
-        self.playButton.pressed.connect(self.mediaPlayer.play)
-        self.stopButton.clicked.connect(self.mediaPlayer.pause)
+        self.playButton.pressed.connect(self.worker.worker_play)
+        self.stopButton.clicked.connect(self.worker.worker_pause)
         self.addBehaviorButton.clicked.connect(self.addBehavior)
         self.editBehaviorEnterButton.clicked.connect(self.editBehavior)
 
         # connect slider
         self.horizontalSlider.sliderMoved.connect(self.setPosition)
-        self.horizontalSlider.sliderMoved.connect(self.FramelcdNumber.display)
 
         # connect keys
         self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Left"), self.centralwidget, self.key_left)
         self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Right"), self.centralwidget, self.key_right)
-
-        # timer to update frame
-        self.timer = QTimer(self.FramelcdNumber)
-        self.timer.timeout.connect(self.updateLcdNumberContent)
-        self.timer.start(1)
 
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
@@ -291,24 +310,43 @@ class Ui_MainWindow(object):
         self.stopButton.setText(_translate("MainWindow", "Stop"))
         self.frameBackButton.setText(_translate("MainWindow", "<"))
         self.frameFrontButton.setText(_translate("MainWindow", ">"))
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.editBehaviorLabel.setText(_translate("MainWindow", "Behavior"))
         self.editBehaviorFrLabel.setText(_translate("MainWindow", "Frame Range"))
         self.dashLabel.setText(_translate("MainWindow", "-"))
         self.editBehaviorEnterButton.setText(_translate("MainWindow", "Enter"))
         self.addBehaviorLabel.setText(_translate("MainWindow", "Behavior:"))
         self.addBehaviorButton.setText(_translate("MainWindow", "Add"))
-
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.FrameLabel.setText(_translate("MainWindow", "Frame: "))
+        # menubar text
         self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
-
+        self.actionOpen.setText(_translate("MainWindow", "Open Video"))
+        self.uploadDataOpen.setText(_translate("MainWindow", "Upload Data"))
+        
+    def uploadData(self):
+        filepath, _ = QFileDialog.getOpenFileName(None, "Upload Data", 
+            QDir.homePath(), "SQL Data (*.db)")
+        print(filepath)
+        if filepath:
+            self.con = sqlite3.connect(filepath)
+            cur = self.con.cursor()
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            beh_list = np.array(cur.fetchall()).flatten()
+            print("BEHAVIORS: ", beh_list)
+            # Populate editBehavior Dropdown
+            self.editBehaviorComboBox.clear()
+            self.editBehaviorComboBox.addItems(beh_list)
+            # Populate behavior table
+            self.behaviorTable.connect_data(self.con)
+            self.behaviorTable.update_all_table()
+            # Populate behavior widget
+            self.saveBehaviorWidget.connect_data(self.con)
+            self.saveBehaviorWidget.update_beh_list()
+        else:
+            print('FILE DOES NOT EXIST')
+        pass
     def openFile(self):
         folder = QFileDialog.getExistingDirectory(
-            None, "Select Directory", QDir.homePath() )
+            None, "Select Directory", QDir.homePath())
         if folder != '':
             filename = folder.split('/')[-1]
             # total density plot
@@ -335,38 +373,31 @@ class Ui_MainWindow(object):
 
     def play(self):
         self.mediaPlayer.play()
-    def stop(self):
+    def pause(self):
         self.mediaPlayer.pause()
+        frame = int(1.0*self.mediaPlayer.position()*self.fr/1000)
+        self.FrameNumberLineEdit.setText(str(frame))
+        self.FrameNumberLineEdit.repaint()
     def positionChanged(self, position):
         self.horizontalSlider.setValue(position)
         self.BPGraph.update_graph(position)
         self.BPcanvas.draw()
         self.tsneGraph.update_graph(position)
         self.tsnecanvas.draw()
-    def updateLcdNumberContent(self):
-        duration = self.mediaPlayer.duration()
-        position = self.mediaPlayer.position()
-        if duration != 0 and self.BPGraph.num_frame != 0:
-            self.FramelcdNumber.display(int(1.0*self.BPGraph.num_frame*position/duration))
-        else:
-            self.FramelcdNumber.display(0)
-        pass
-        
     def durationChanged(self, duration):
         self.horizontalSlider.setRange(0, duration)
         self.BPGraph.set_duration(duration)
         self.tsneGraph.set_duration(duration)
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
-        self.BPGraph.update_graph(position)
-        self.BPcanvas.draw()
-        self.tsneGraph.update_graph(position)
-        self.tsnecanvas.draw()
+        self.FrameNumberLineEdit.setText(str(int(1.0*position*self.fr/1000)))
+        self.FrameNumberLineEdit.repaint()
     def addBehavior(self):
         newBehText = self.addBehaviorLineEdit.text()
         if newBehText: 
             self.addBehaviorLineEdit.clear()
             self.editBehaviorComboBox.addItem(newBehText)
+            self.addBehaviorLineEdit.repaint()
 
     def editBehavior(self):
         behavior = self.editBehaviorComboBox.currentText()
@@ -374,15 +405,20 @@ class Ui_MainWindow(object):
         stopFr = self.editBehaviorStopBox.text()
         self.editBehaviorStartBox.clear()
         self.editBehaviorStopBox.clear()
+        self.editBehaviorStartBox.repaint()
+        self.editBehaviorStopBox.repaint()
         if behavior and startFr and stopFr:
             self.behaviorTable.add_row(behavior, startFr, stopFr)
         # update save behavior widget
         self.saveBehaviorWidget.update_beh_list()
 
     def key_left(self):
+        # move back one frame
         self.setPosition(self.mediaPlayer.position()-1000/self.fr)
     def key_right(self):
+        # move forward one frame
         self.setPosition(self.mediaPlayer.position()+1000/self.fr)
+
 
 
 
