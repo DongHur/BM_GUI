@@ -26,8 +26,11 @@ class BP_Graph(Figure):
     def set_duration(self, duration):
         self.duration = duration
         pass
-    def update_graph(self, position):
-        frame = int(self.num_frame*position/self.duration)-1 # index is one less
+    def update_graph(self, position, frame_data=False):
+        if frame_data:
+            frame = position # frame as data point
+        else:
+            frame = int(self.num_frame*position/self.duration)-1 # index is one less; millisecond as data
         self.clear()
         ax = self.add_subplot(111)
         # plot ant points for specific time point t; specific to out setup with 30bp ants
@@ -48,3 +51,10 @@ class BP_Graph(Figure):
         ax.set_title('Ant Body Point Graph', fontsize=8);
         ax.tick_params(axis='both', labelsize=6);
         pass
+
+
+
+
+
+
+
