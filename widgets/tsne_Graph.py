@@ -20,6 +20,7 @@ class tsne_Graph(Figure):
         ax.plot([])
         ax.set_title('tSNE Projection', fontsize=8);
         ax.tick_params(axis='both', labelsize=6);
+        ax.grid()
         pass
     def set_newfile(self, filepath):
         self.tsne_filepath = filepath
@@ -40,6 +41,7 @@ class tsne_Graph(Figure):
         frame = int(self.num_frame*position/self.duration)-1 # index is one less
         self.clear()
         ax = self.add_subplot(111)
+        ax.grid()
         if frame>0:
             ax.scatter(self.data[:frame-1, 0], self.data[:frame-1, 1], c='b', alpha=0.07, s=s)
         ax.scatter(self.data[frame, 0], self.data[frame, 1], c='r', s=s)

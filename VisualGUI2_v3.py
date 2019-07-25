@@ -39,6 +39,7 @@ class Ui_MainWindow(object):
         super(Ui_MainWindow, self).__init__()
         self.fr = 50
         self.con = None
+        self.video_on = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -297,9 +298,10 @@ class Ui_MainWindow(object):
         self.horizontalSlider.sliderMoved.connect(self.setPosition)
 
         # connect keys
-        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Left"), self.centralwidget, self.key_left)
-        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Right"), self.centralwidget, self.key_right)
-
+        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+J"), self.centralwidget, self.key_left)
+        self.shortcut2 = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+K"), self.centralwidget, self.key_right)
+        self.shortcut3 = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Space"), self.centralwidget, self.shorcut_spacebar)
+        
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
 
@@ -370,10 +372,16 @@ class Ui_MainWindow(object):
                 QUrl.fromLocalFile(folder+'/'+filename+'.avi')))
             # behavior table
             self.behaviorTable.set_newfile(folder+'/EMBED.mat')
-
+    def shorcut_spacebar(self):
+        if self.video_on:
+            self.pause()
+        else:
+            self.play()
     def play(self):
+        self.video_on = True
         self.mediaPlayer.play()
     def pause(self):
+        self.video_on = False
         self.mediaPlayer.pause()
         frame = int(1.0*self.mediaPlayer.position()*self.fr/1000)
         self.FrameNumberLineEdit.setText(str(frame))

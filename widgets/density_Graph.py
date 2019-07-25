@@ -22,11 +22,13 @@ class density_Graph(Figure):
         ax.plot([], '*-')
         ax.set_title(title, fontsize=8);
         ax.tick_params(axis='both', labelsize=8);
+        ax.grid()
         pass
     def set_newfile(self, filepath):
         self.density_filepath = filepath
         self.clear()
         ax = self.add_subplot(111)
+        ax.grid()
         # read data
         data = sio.loadmat(filepath,squeeze_me=True, struct_as_record=False)
         matfig = data['hgS_070000']
