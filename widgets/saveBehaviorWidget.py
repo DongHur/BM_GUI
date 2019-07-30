@@ -264,6 +264,7 @@ class saveBehaviorWidget(QWidget):
         start = int(self.saveBehaviorStartBox.text())
         stop = int(self.saveBehaviorStopBox.text())
         fig_title = self.savedBehaviorComboBox.currentText() + ": Entry #" + self.entryNoComboBox.currentText()
+        self.alpha = 1
         # creates animation writer
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=15, metadata=dict(arist="Dong Hur"), bitrate=1800)
@@ -280,24 +281,52 @@ class saveBehaviorWidget(QWidget):
             self.lines.append(lobj)
         # start animating through each iteration
         line_ani = animation.FuncAnimation(fig, self.update_graph,  init_func=self.init_graph,
-            frames=np.arange(start, stop), fargs=(self.smallBPGraph.data, self.lines), interval=50, blit=True)
+            frames=np.arange(start, stop), fargs=(plt, self.smallBPGraph.data, self.lines), interval=50, blit=True)
         line_ani.save(filepath, writer=writer)
         pass
     def init_graph(self):
         for line in self.lines:
             line.set_data([],[])
         return self.lines
-    def update_graph(self, frame, data, lines):
+    def update_graph(self, frame, plt, data, lines):
         # plot ant points for specific time point t; specific to out setup with 30bp ants
         # data format: num_bp x (X_coord, Y_coord) x t
-        lines[0].set_data(data[0:4,0,frame], data[0:4,1,frame])
-        lines[1].set_data(data[4:8,0,frame], data[4:8,1,frame])
-        lines[2].set_data(data[8:11,0,frame], data[8:11,1,frame])
-        lines[3].set_data(data[11:14,0,frame], data[11:14,1,frame])
-        lines[4].set_data(data[14:17,0,frame], data[14:17,1,frame])
-        lines[5].set_data(data[17:21,0,frame], data[17:21,1,frame])
-        lines[6].set_data(data[21:24,0,frame], data[21:24,1,frame])
-        lines[7].set_data(data[24:27,0,frame], data[24:27,1,frame])
-        lines[8].set_data(data[27:30,0,frame], data[27:30,1,frame])
+        if False:
+            lines[0].set_data(data[0:4,0,frame], data[0:4,1,frame])
+            lines[1].set_data(data[4:8,0,frame], data[4:8,1,frame])
+            lines[2].set_data(data[8:11,0,frame], data[8:11,1,frame])
+            lines[3].set_data(data[11:14,0,frame], data[11:14,1,frame])
+            lines[4].set_data(data[14:17,0,frame], data[14:17,1,frame])
+            lines[5].set_data(data[17:21,0,frame], data[17:21,1,frame])
+            lines[6].set_data(data[21:24,0,frame], data[21:24,1,frame])
+            lines[7].set_data(data[24:27,0,frame], data[24:27,1,frame])
+            lines[8].set_data(data[27:30,0,frame], data[27:30,1,frame])
+        else:
+            plt.plot(data[0:4,0,frame], data[0:4,1,frame], '-bo', alpha=self.alpha)
+            plt.plot(data[4:8,0,frame], data[4:8,1,frame], '-go', alpha=self.alpha)
+            plt.plot(data[8:11,0,frame], data[8:11,1,frame], '-ro', alpha=self.alpha)
+            plt.plot(data[11:14,0,frame], data[11:14,1,frame], '-co', alpha=self.alpha)
+            plt.plot(data[14:17,0,frame], data[14:17,1,frame], '-mo', alpha=self.alpha)
+            plt.plot(data[17:21,0,frame], data[17:21,1,frame], '-yo', alpha=self.alpha)
+            plt.plot(data[21:24,0,frame], data[21:24,1,frame], '-ko', alpha=self.alpha)
+            plt.plot(data[24:27,0,frame], data[24:27,1,frame], '-go', alpha=self.alpha)
+            plt.plot(data[27:30,0,frame], data[27:30,1,frame], '-ro', alpha=self.alpha)
+            self.alpha = 0.15
         return lines        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
