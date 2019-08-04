@@ -1,247 +1,45 @@
 import numpy as np
 import sqlite3
 import sys
+import os
 
-from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
-
-from PyQt5.QtCore import QRect, Qt, QMetaObject, QTimer, QDir, QUrl, QCoreApplication, QObject, pyqtSignal, QThread, pyqtSlot
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QSlider, QPushButton, QLabel, 
-QFrame, QLineEdit, QComboBox, QMenuBar, QStatusBar, QAction, QFileDialog, QMenu)
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaMetaData
+from PyQt5.QtCore import QTimer, QDir, QUrl
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QShortcut
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+
+from UI.Ui_MainWindow import Ui_MainWindow
 
 from widgets.tsne_Graph import tsne_Graph
 from widgets.BP_Graph import BP_Graph
 from widgets.density_Graph import density_Graph
 from widgets.behaviorTableWidget import behaviorTableWidget
-from widgets.saveBehaviorWidget import saveBehaviorWidget
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
 
-class Worker(QObject):
-    play = pyqtSignal()
-    pause = pyqtSignal()
-    def __init__(self,*args, **kwargs):
-        super(Worker, self).__init__()
-
-    @pyqtSlot()
-    def worker_play(self):
-        self.play.emit()
-    @pyqtSlot()
-    def worker_pause(self):
-        self.pause.emit()
-
-class Ui_MainWindow(object):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
-        super(Ui_MainWindow, self).__init__()
+        super(MainWindow, self).__init__()
         self.fr = 50
         self.con = None
         self.video_on = False
+        self.timer = None
+        self.filename = ""
+        self.dir_path = ""
+        self.fr_start = 0
+        self.fr_stop = 0
+        self.setupUi(self)
+        self.setup_connection()
+        self.show()
 
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1438, 811)
-        self.centralwidget = QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-
-        self.horizontalLayoutWidget_2 = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_2.setGeometry(QRect(10, 10, 341, 311))
-        self.horizontalLayoutWidget_2.setObjectName("horizontalLayoutWidget_2")
-
-        self.horizontalLayout_1 = QHBoxLayout(self.horizontalLayoutWidget_2)
-        self.horizontalLayout_1.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_1.setObjectName("horizontalLayout_1")
-
-        self.horizontalSlider = QSlider(self.centralwidget)
-        self.horizontalSlider.setGeometry(QRect(20, 330, 1401, 22))
-        self.horizontalSlider.setOrientation(Qt.Horizontal)
-        self.horizontalSlider.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.horizontalSlider.setObjectName("horizontalSlider")
-
-        self.playButton = QPushButton(self.centralwidget)
-        self.playButton.setGeometry(QRect(10, 360, 113, 32))
-        self.playButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.playButton.setObjectName("playButton")
-
-        self.FrameLabel = QLabel(self.centralwidget)
-        self.FrameLabel.setGeometry(QRect(260, 365, 60, 16))
-        self.FrameLabel.setObjectName("FrameLabel")
-
-        self.FrameNumberLineEdit = QLineEdit(self.centralwidget)
-        self.FrameNumberLineEdit.setGeometry(QRect(310, 365, 91, 21))
-        self.FrameNumberLineEdit.setObjectName("FrameNumberLineEdit")
-        self.FrameNumberLineEdit.setFocusPolicy(Qt.ClickFocus)
-
-        self.frameBackButton = QPushButton(self.centralwidget)
-        self.frameBackButton.setGeometry(QRect(410, 360, 50, 32))
-        self.frameBackButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.frameBackButton.setObjectName("frameBackButton")
-        self.frameFrontButton = QPushButton(self.centralwidget)
-        self.frameFrontButton.setGeometry(QRect(460, 360, 50, 32))
-        self.frameFrontButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.frameFrontButton.setObjectName("frameFrontButton")
-        self.frameFrontButton.clicked.connect(self.key_right)
-        self.frameBackButton.clicked.connect(self.key_left)
-
-        self.horizontalLayoutWidget_3 = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_3.setGeometry(QRect(370, 10, 341, 311))
-        self.horizontalLayoutWidget_3.setObjectName("horizontalLayoutWidget_3")
-
-        self.horizontalLayout_2 = QHBoxLayout(self.horizontalLayoutWidget_3)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.horizontalLayoutWidget_4 = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_4.setGeometry(QRect(730, 10, 341, 311))
-        self.horizontalLayoutWidget_4.setObjectName("horizontalLayoutWidget_4")
-        self.horizontalLayout_3 = QHBoxLayout(self.horizontalLayoutWidget_4)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.horizontalLayoutWidget_5 = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_5.setGeometry(QRect(1090, 10, 341, 311))
-        self.horizontalLayoutWidget_5.setObjectName("horizontalLayoutWidget_5")
-        self.horizontalLayout_4 = QHBoxLayout(self.horizontalLayoutWidget_5)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-
-        self.stopButton = QPushButton(self.centralwidget)
-        self.stopButton.setGeometry(QRect(130, 360, 113, 32))
-        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.stopButton.setObjectName("stopButton")
-
-        ########################
-        self.frame = QFrame(self.centralwidget)
-        self.frame.setGeometry(QRect(30, 420, 370, 71))
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.frame.setObjectName("frame")
-
-        self.addBehaviorLabel = QLabel(self.frame)
-        self.addBehaviorLabel.setGeometry(QRect(10, 30, 60, 16))
-        self.addBehaviorLabel.setObjectName("addBehaviorLabel")
-
-        self.addBehaviorLineEdit = QLineEdit(self.frame)
-        self.addBehaviorLineEdit.setGeometry(QRect(80, 30, 171, 21))
-        self.addBehaviorLineEdit.setObjectName("addBehaviorLineEdit")
-        self.addBehaviorLineEdit.setFocusPolicy(Qt.ClickFocus)
-
-        self.addBehaviorButton = QPushButton(self.frame)
-        self.addBehaviorButton.setGeometry(QRect(250, 20, 113, 41))
-        self.addBehaviorButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.addBehaviorButton.setObjectName("addBehaviorButton")
-        
-        ##########################
-        self.editBehaviorFrame = QFrame(self.centralwidget)
-        self.editBehaviorFrame.setGeometry(QRect(450, 420, 531, 71))
-        self.editBehaviorFrame.setFrameShape(QFrame.StyledPanel)
-        self.editBehaviorFrame.setFrameShadow(QFrame.Raised)
-        self.editBehaviorFrame.setObjectName("editBehaviorFrame")
-
-        self.editBehaviorLabel = QLabel(self.editBehaviorFrame)
-        self.editBehaviorLabel.setGeometry(QtCore.QRect(70, 10, 69, 16))
-        self.editBehaviorLabel.setObjectName("editBehaviorLabel")
-
-        self.editBehaviorFrLabel = QLabel(self.editBehaviorFrame)
-        self.editBehaviorFrLabel.setGeometry(QtCore.QRect(260, 10, 101, 16))
-        self.editBehaviorFrLabel.setObjectName("editBehaviorFrLabel")
-
-        self.dashLabel = QLabel(self.editBehaviorFrame)
-        self.dashLabel.setGeometry(QtCore.QRect(300, 30, 16, 16))
-        self.dashLabel.setObjectName("dashLabel")
-
-        self.editBehaviorStartBox = QLineEdit(self.editBehaviorFrame)
-        self.editBehaviorStartBox.setGeometry(QtCore.QRect(230, 30, 61, 21))
-        self.editBehaviorStartBox.setText("")
-        self.editBehaviorStartBox.setObjectName("editBehaviorStartBox")
-        self.editBehaviorStartBox.setFocusPolicy(Qt.ClickFocus)
-
-        self.editBehaviorStopBox = QLineEdit(self.editBehaviorFrame)
-        self.editBehaviorStopBox.setGeometry(QtCore.QRect(320, 30, 61, 21))
-        self.editBehaviorStopBox.setText("")
-        self.editBehaviorStopBox.setObjectName("editBehaviorStopBox")
-        self.editBehaviorStopBox.setFocusPolicy(Qt.ClickFocus)
-
-        self.editBehaviorEnterButton = QPushButton(self.editBehaviorFrame)
-        self.editBehaviorEnterButton.setGeometry(QtCore.QRect(400, 20, 113, 41))
-        self.editBehaviorEnterButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.editBehaviorEnterButton.setObjectName("editBehaviorEnterButton")
-
-        self.editBehaviorComboBox = QComboBox(self.editBehaviorFrame)
-        self.editBehaviorComboBox.setGeometry(QtCore.QRect(10, 30, 210, 26))
-        self.editBehaviorComboBox.setCursor(QCursor(Qt.PointingHandCursor))
-        self.editBehaviorComboBox.setObjectName("editBehaviorComboBox")
-
-        ##########
-        self.divider1 = QFrame(self.centralwidget)
-        self.divider1.setGeometry(QRect(10, 390, 1421, 20))
-        self.divider1.setFrameShape(QFrame.HLine)
-        self.divider1.setFrameShadow(QFrame.Sunken)
-        self.divider1.setObjectName("divider1")
-
-        self.divider2 = QFrame(self.centralwidget)
-        self.divider2.setGeometry(QRect(10, 500, 971, 20))
-        self.divider2.setFrameShape(QFrame.HLine)
-        self.divider2.setFrameShadow(QFrame.Sunken)
-        self.divider2.setObjectName("divider2")
-
-        #********  Save Widget  **********
-        self.saveLayoutWidget = QWidget(self.centralwidget)
-        self.saveLayoutWidget.setGeometry(QRect(5, 530, 1000, 400))
-        self.saveLayoutWidget.setObjectName("saveLayoutWidget")
-        self.saveHorizWidget = QHBoxLayout(self.saveLayoutWidget)
-        self.saveHorizWidget.setContentsMargins(0, 0, 0, 0)
-        self.saveHorizWidget.setObjectName("saveHorizWidget")
-        self.saveBehaviorWidget = saveBehaviorWidget()
-        self.saveHorizWidget.addWidget(self.saveBehaviorWidget)
-        #******************
-
-        self.horizontalLayoutWidget = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QRect(990, 420, 431, 341))
-        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-
-        self.horizontalLayoutWidget_7 = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget_7.setGeometry(QRect(690, 530, 280, 230))
-        self.horizontalLayoutWidget_7.setObjectName("horizontalLayoutWidget_7")
-
-        self.totalBehaviorLayout = QHBoxLayout(self.horizontalLayoutWidget_7)
-        self.totalBehaviorLayout.setContentsMargins(0, 0, 0, 0)
-        self.totalBehaviorLayout.setObjectName("totalBehaviorLayout")
-        
-        self.horizontalLayoutWidget = QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QRect(990, 420, 431, 341))
-        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.tableLayout = QHBoxLayout(self.horizontalLayoutWidget)
-        self.tableLayout.setContentsMargins(0, 0, 0, 0)
-        self.tableLayout.setObjectName("tableLayout")
-
+    def setup_connection(self):
         self.behaviorTable = behaviorTableWidget()
         self.tableLayout.addWidget(self.behaviorTable)
-
-        # Menu Bar
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setGeometry(QRect(0, 0, 1438, 22))
-        self.menubar.setObjectName("menubar")
-        self.menuFile = QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        # Upload Data
-        self.uploadDataOpen = QAction(MainWindow)
-        self.uploadDataOpen.setObjectName("uploadDataOpen")
-        self.menuFile.addAction(self.uploadDataOpen)
-        self.uploadDataOpen.triggered.connect(self.uploadData)
+        
         # Open Tab
-        self.actionOpen = QAction(MainWindow)
-        self.actionOpen.setObjectName("actionOpen")
-        self.menuFile.addAction(self.actionOpen)
-        self.actionOpen.triggered.connect(self.openFile)
-        # Append Action
-        self.menubar.addAction(self.menuFile.menuAction())
+        self.uploadVideoOpen.triggered.connect(self.openFile)
+        self.uploadDataOpen.triggered.connect(self.uploadData)
 
         # Create Media Player
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
@@ -281,16 +79,8 @@ class Ui_MainWindow(object):
         self.addBehaviorLineEdit.returnPressed.connect(self.addBehavior)
         self.editBehaviorStopBox.returnPressed.connect(self.editBehavior)
 
-        # create worker
-        self.worker = Worker()
-        self.thread = QThread()
-        self.thread.start()
-        self.worker.moveToThread(self.thread)
-        self.worker.play.connect(self.play)
-        self.worker.pause.connect(self.pause)
-        # connect button
-        self.playButton.pressed.connect(self.worker.worker_play)
-        self.stopButton.clicked.connect(self.worker.worker_pause)
+        self.playButton.pressed.connect(self.play)
+        self.stopButton.clicked.connect(self.pause)
         self.addBehaviorButton.clicked.connect(self.addBehavior)
         self.editBehaviorEnterButton.clicked.connect(self.editBehavior)
 
@@ -298,31 +88,23 @@ class Ui_MainWindow(object):
         self.horizontalSlider.sliderMoved.connect(self.setPosition)
 
         # connect keys
-        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+J"), self.centralwidget, self.key_left)
-        self.shortcut2 = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+K"), self.centralwidget, self.key_right)
-        self.shortcut3 = QtWidgets.QShortcut(QtGui.QKeySequence("Alt+Space"), self.centralwidget, self.shorcut_spacebar)
-        
-        self.retranslateUi(MainWindow)
-        QMetaObject.connectSlotsByName(MainWindow)
+        self.shortcut = QShortcut(QKeySequence("Alt+J"), self.centralwidget, self.key_left)
+        self.shortcut2 = QShortcut(QKeySequence("Alt+K"), self.centralwidget, self.key_right)
+        self.shortcut3 = QShortcut(QKeySequence("Alt+Space"), self.centralwidget, self.shorcut_spacebar)
+        ##########################
+        self.smallBPGraph = BP_Graph()
+        self.smallBPcanvas = FigureCanvas(self.smallBPGraph)
+        self.smallBPGraph.init_plot()
+        self.saveFilenameVideoLayout.addWidget(self.smallBPcanvas)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.playButton.setText(_translate("MainWindow", "Play"))
-        self.stopButton.setText(_translate("MainWindow", "Stop"))
-        self.frameBackButton.setText(_translate("MainWindow", "<"))
-        self.frameFrontButton.setText(_translate("MainWindow", ">"))
-        self.editBehaviorLabel.setText(_translate("MainWindow", "Behavior"))
-        self.editBehaviorFrLabel.setText(_translate("MainWindow", "Frame Range"))
-        self.dashLabel.setText(_translate("MainWindow", "-"))
-        self.editBehaviorEnterButton.setText(_translate("MainWindow", "Enter"))
-        self.addBehaviorLabel.setText(_translate("MainWindow", "Behavior:"))
-        self.addBehaviorButton.setText(_translate("MainWindow", "Add"))
-        self.FrameLabel.setText(_translate("MainWindow", "Frame: "))
-        # menubar text
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.actionOpen.setText(_translate("MainWindow", "Open Video"))
-        self.uploadDataOpen.setText(_translate("MainWindow", "Upload Data"))
+        # connect combobox
+        self.savedBehaviorComboBox.currentIndexChanged.connect(self.update_entry_list)
+        self.entryNoComboBox.currentIndexChanged.connect(self.update_parameter)
+
+        # connect button
+        self.saveFilenameButton.clicked.connect(self.save_video)
+        self.saveFilenamePlayButton.clicked.connect(self.toggle_video)
+        self.changeFrameButton.clicked.connect(self.update_frames)
         
     def uploadData(self):
         filepath, _ = QFileDialog.getOpenFileName(None, "Upload Data", 
@@ -341,8 +123,7 @@ class Ui_MainWindow(object):
             self.behaviorTable.connect_data(self.con)
             self.behaviorTable.update_all_table()
             # Populate behavior widget
-            self.saveBehaviorWidget.connect_data(self.con)
-            self.saveBehaviorWidget.update_beh_list()
+            self.update_beh_list()
         else:
             print('FILE DOES NOT EXIST')
         pass
@@ -418,7 +199,7 @@ class Ui_MainWindow(object):
         if behavior and startFr and stopFr:
             self.behaviorTable.add_row(behavior, startFr, stopFr)
         # update save behavior widget
-        self.saveBehaviorWidget.update_beh_list()
+        self.update_beh_list()
 
     def key_left(self):
         # move back one frame
@@ -427,13 +208,183 @@ class Ui_MainWindow(object):
         # move forward one frame
         self.setPosition(self.mediaPlayer.position()+1000/self.fr)
 
+    ######################
+    def update_beh_list(self):
+        if self.video_on:
+            self.stopSmallBPGraph()
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            beh_list = cur.fetchall()
+            self.savedBehaviorComboBox.clear()
+            for idx, behavior in enumerate(beh_list):
+                self.savedBehaviorComboBox.addItem(behavior[0])
+            self.savedBehaviorComboBox.setCurrentIndex(0)
+    def update_entry_list(self, beh_idx):
+        if self.video_on:
+            self.stopSmallBPGraph()
+        # beh_idx is -1 when new behavior is added
+        print("BEH_IDX (TESTING): ", beh_idx)
+        if beh_idx >= 0:
+            behavior = self.savedBehaviorComboBox.itemText(beh_idx)
+            with self.con:
+                cur = self.con.cursor()
+                print("BEHAVIOR (TESTING): ", behavior)
+                cur.execute("SELECT COUNT(*) FROM '{}'".format(behavior))
+                num_entry = cur.fetchone()
+                # clear entry no.
+                self.entryNoComboBox.clear()
+                print("ENTRY NO: ", num_entry[0])
+                for i in range(num_entry[0]):
+                    self.entryNoComboBox.addItem(str(i+1)) 
+                self.entryNoComboBox.setCurrentIndex(0)
+        pass
+    def update_parameter(self, entry_idx):
+        if self.video_on:
+            self.stopSmallBPGraph()
+        if entry_idx >= 0:
+            behavior = self.savedBehaviorComboBox.currentText()
+            print("ENTRY_IDX: ", entry_idx)
+            print("BEHAVIOR: ",behavior)
+            print("COMMAND: ", "SELECT filename, startFr, stopFr, tsneX, tsneY FROM '{}' WHERE id={}"
+                    .format(behavior, entry_idx+1))
+            with self.con:
+                # fetch data for specific behavior and entry
+                cur = self.con.cursor()
+                cur.execute("SELECT filename, startFr, stopFr, tsneX, tsneY FROM '{}' WHERE id={}"
+                    .format(behavior, entry_idx+1))
+                data = cur.fetchone()
+                # abstract filepath
+                self.filename = data[0].split('/')[-2]
+                self.dir_path = os.path.dirname(data[0])
+                self.fr_start = data[1]
+                self.fr_stop = data[2]
+                print("DATA: ", data)
+                print()
+                # update parameter
+                self.saveFilenameBox.setText(self.dir_path+"/"+behavior+"_"+str(entry_idx+1)+".mp4")
+                self.saveBehaviorStartBox.setText(str(data[1]))
+                self.saveBehaviorStopBox.setText(str(data[2]))
+                self.tSNE_XmeanLabel.setText("tSNE X (mean): "+format(data[3],'.4f'))
+                self.tSNE_YmeanLabel.setText("tSNE Y (mean): "+format(data[4],'.4f'))
+                # update GUI UI
+                self.saveFilenameBox.repaint()
+                self.saveBehaviorStartBox.repaint()
+                self.saveBehaviorStopBox.repaint()
+                self.tSNE_XmeanLabel.repaint()
+                self.tSNE_YmeanLabel.repaint()
+        pass
+    def update_frames(self):
+        if self.video_on:
+            self.stopSmallBPGraph()
+        self.fr_start = self.saveBehaviorStartBox.text()
+        self.fr_stop = self.saveBehaviorStopBox.text()
+        if self.fr_start and self.fr_stop:
+            # restart small bp_graph video
+            self.fr_start = int(self.fr_start)
+            self.fr_stop = int(self.fr_stop)
+        pass
+
+    # Play small bp_graph video
+    def toggle_video(self):
+        if not self.video_on:
+            print("IN HERE")
+            self.playSmallBPGraph()
+        else:
+            print("STOP HERE")
+            self.stopSmallBPGraph()
+    def playSmallBPGraph(self):
+        print("path: ", self.dir_path)
+        print("filename: ", self.filename)
+        if  self.dir_path and self.filename:
+            self.saveFilenamePlayButton.setText("Stop")
+            self.saveFilenamePlayButton.repaint()
+            # get bodypoint data
+            self.smallBPGraph.set_newfile(self.dir_path+'/BP_'+self.filename+'.npy')
+            # reset and start video
+            self.video_on=True
+            self.pos_iter = self.fr_start
+            # setup timer for video
+            self.timer = QTimer()
+            self.timer.timeout.connect(self.iter_video)
+            self.timer.start(100)
+        pass
+    def stopSmallBPGraph(self):
+            self.timer.stop()
+            self.saveFilenamePlayButton.setText("Play")
+            self.saveFilenamePlayButton.repaint()
+            self.video_on=False
+
+    def iter_video(self):
+        self.smallBPGraph.update_graph(position=self.pos_iter, frame_data=True)
+        self.smallBPcanvas.draw()
+        if self.pos_iter+1 == self.fr_stop:
+            self.pos_iter = self.fr_start
+        else:
+            self.pos_iter += 1
+        pass
+
+    # Save small bp_graph functionality
+    def save_video(self):
+        # parameter for video
+        filepath = self.saveFilenameBox.text()
+        start = int(self.saveBehaviorStartBox.text())
+        stop = int(self.saveBehaviorStopBox.text())
+        fig_title = self.savedBehaviorComboBox.currentText() + ": Entry #" + self.entryNoComboBox.currentText()
+        self.alpha = 1
+        # creates animation writer
+        Writer = animation.writers['ffmpeg']
+        writer = Writer(fps=15, metadata=dict(arist="Dong Hur"), bitrate=1800)
+        # create animation plot
+        self.lines = []
+        fig = plt.figure()
+        ax1 = plt.axes(xlim=(-200,200), ylim=(-200,200))
+        line, = ax1.plot([],[],'-o')
+        plt.gca().set_aspect('equal', 'box')
+        plt.title(fig_title, fontsize=8)
+        plt.tick_params(axis='both', labelsize=6)
+        for index in range(9):
+            lobj = ax1.plot([],[], '-o')[0]
+            self.lines.append(lobj)
+        # start animating through each iteration
+        line_ani = animation.FuncAnimation(fig, self.update_graph,  init_func=self.init_graph,
+            frames=np.arange(start, stop), fargs=(plt, self.smallBPGraph.data, self.lines), interval=50, blit=True)
+        line_ani.save(filepath, writer=writer)
+        pass
+    def init_graph(self):
+        for line in self.lines:
+            line.set_data([],[])
+        return self.lines
+    def update_graph(self, frame, plt, data, lines):
+        # plot ant points for specific time point t; specific to out setup with 30bp ants
+        # data format: num_bp x (X_coord, Y_coord) x t
+        if False:
+            lines[0].set_data(data[0:4,0,frame], data[0:4,1,frame])
+            lines[1].set_data(data[4:8,0,frame], data[4:8,1,frame])
+            lines[2].set_data(data[8:11,0,frame], data[8:11,1,frame])
+            lines[3].set_data(data[11:14,0,frame], data[11:14,1,frame])
+            lines[4].set_data(data[14:17,0,frame], data[14:17,1,frame])
+            lines[5].set_data(data[17:21,0,frame], data[17:21,1,frame])
+            lines[6].set_data(data[21:24,0,frame], data[21:24,1,frame])
+            lines[7].set_data(data[24:27,0,frame], data[24:27,1,frame])
+            lines[8].set_data(data[27:30,0,frame], data[27:30,1,frame])
+        else:
+            plt.plot(data[0:4,0,frame], data[0:4,1,frame], '-bo', alpha=self.alpha)
+            plt.plot(data[4:8,0,frame], data[4:8,1,frame], '-go', alpha=self.alpha)
+            plt.plot(data[8:11,0,frame], data[8:11,1,frame], '-ro', alpha=self.alpha)
+            plt.plot(data[11:14,0,frame], data[11:14,1,frame], '-co', alpha=self.alpha)
+            plt.plot(data[14:17,0,frame], data[14:17,1,frame], '-mo', alpha=self.alpha)
+            plt.plot(data[17:21,0,frame], data[17:21,1,frame], '-yo', alpha=self.alpha)
+            plt.plot(data[21:24,0,frame], data[21:24,1,frame], '-ko', alpha=self.alpha)
+            plt.plot(data[24:27,0,frame], data[24:27,1,frame], '-go', alpha=self.alpha)
+            plt.plot(data[27:30,0,frame], data[27:30,1,frame], '-ro', alpha=self.alpha)
+            self.alpha = 0.15
+        return lines        
+
 
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    app = QApplication(sys.argv)
+    mainWin = MainWindow()
     sys.exit(app.exec_())
