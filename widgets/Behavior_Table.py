@@ -7,9 +7,9 @@ from PyQt5.QtCore import QRect, Qt
 from PyQt5.QtGui import QCursor, QFont, QColor
 from PyQt5.QtWidgets import (QAbstractItemView, QTableWidgetItem)
 
-class behaviorTableWidget(QtWidgets.QTableWidget):
+class Behavior_Table(QtWidgets.QTableWidget):
     def __init__(self, *args, **kwargs):
-        super(behaviorTableWidget, self).__init__()
+        super(Behavior_Table, self).__init__()
         self.data = {}
         self.tSNE = None
         self.filepath = None

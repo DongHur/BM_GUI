@@ -14,7 +14,7 @@ from UI.Ui_MainWindow import Ui_MainWindow
 from widgets.tsne_Graph import tsne_Graph
 from widgets.BP_Graph import BP_Graph
 from widgets.density_Graph import density_Graph
-from widgets.behaviorTableWidget import behaviorTableWidget
+from widgets.Behavior_Table import Behavior_Table
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -34,14 +34,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.show()
 
     def setup_connection(self):
-        self.behaviorTable = behaviorTableWidget()
+        # Append Behavior Table
+        self.behaviorTable = Behavior_Table()
         self.tableLayout.addWidget(self.behaviorTable)
-        
-        # Open Tab
-        self.uploadVideoOpen.triggered.connect(self.openFile)
-        self.uploadDataOpen.triggered.connect(self.uploadData)
-
-        # Create Media Player
+        # Append Media Player
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         videoWidget = QVideoWidget()
         self.horizontalLayout_1.addWidget(videoWidget)
@@ -50,61 +46,54 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.setNotifyInterval(int(1000/self.fr))
         self.mediaPlayer.setPlaybackRate(0.3)
-
         # Append BP graph
-        self.BPGraph = BP_Graph()
+        self.BPGraph = BP_Graph() # large body point graph
         self.BPcanvas = FigureCanvas(self.BPGraph)
         self.BPGraph.init_plot()
         self.horizontalLayout_2.addWidget(self.BPcanvas)
-
+        self.smallBPGraph = BP_Graph() # small body point graph
+        self.smallBPcanvas = FigureCanvas(self.smallBPGraph)
+        self.smallBPGraph.init_plot()
+        self.saveFilenameVideoLayout.addWidget(self.smallBPcanvas)
         # Append tSNE graph
         self.tsneGraph = tsne_Graph()
         self.tsnecanvas = FigureCanvas(self.tsneGraph)
         self.tsneGraph.init_plot()
         self.horizontalLayout_3.addWidget(self.tsnecanvas)
-
-        # Append individual density graph
-        self.indDensityGraph = density_Graph()
+        # Append Density Graph
+        self.indDensityGraph = density_Graph() # individual density graph
         self.indDensitycanvas = FigureCanvas(self.indDensityGraph)
         self.indDensityGraph.init_plot(title='Individual Density Plot')
         self.horizontalLayout_4.addWidget(self.indDensitycanvas)
-
-        # Append total density graph
-        self.densityGraph = density_Graph()
+        self.densityGraph = density_Graph() # total density graph
         self.densitycanvas = FigureCanvas(self.densityGraph)
         self.densityGraph.init_plot(title='Total Density Plot')
         self.totalBehaviorLayout.addWidget(self.densitycanvas)
 
-        # connect lineedit
+        # Connect LineEdit
         self.addBehaviorLineEdit.returnPressed.connect(self.addBehavior)
         self.editBehaviorStopBox.returnPressed.connect(self.editBehavior)
-
+        # Connect Buttons
         self.playButton.pressed.connect(self.play)
         self.stopButton.clicked.connect(self.pause)
         self.addBehaviorButton.clicked.connect(self.addBehavior)
         self.editBehaviorEnterButton.clicked.connect(self.editBehavior)
-
-        # connect slider
-        self.horizontalSlider.sliderMoved.connect(self.setPosition)
-
-        # connect keys
-        self.shortcut = QShortcut(QKeySequence("Alt+J"), self.centralwidget, self.key_left)
-        self.shortcut2 = QShortcut(QKeySequence("Alt+K"), self.centralwidget, self.key_right)
-        self.shortcut3 = QShortcut(QKeySequence("Alt+Space"), self.centralwidget, self.shorcut_spacebar)
-        ##########################
-        self.smallBPGraph = BP_Graph()
-        self.smallBPcanvas = FigureCanvas(self.smallBPGraph)
-        self.smallBPGraph.init_plot()
-        self.saveFilenameVideoLayout.addWidget(self.smallBPcanvas)
-
-        # connect combobox
-        self.savedBehaviorComboBox.currentIndexChanged.connect(self.update_entry_list)
-        self.entryNoComboBox.currentIndexChanged.connect(self.update_parameter)
-
-        # connect button
         self.saveFilenameButton.clicked.connect(self.save_video)
         self.saveFilenamePlayButton.clicked.connect(self.toggle_video)
         self.changeFrameButton.clicked.connect(self.update_frames)
+        # Connect MenuBar Tab
+        self.uploadVideoOpen.triggered.connect(self.openFile)
+        self.uploadDataOpen.triggered.connect(self.uploadData)
+        # Connect Slider
+        self.horizontalSlider.sliderMoved.connect(self.setPosition)
+        # Connect Shortcut
+        self.shortcut = QShortcut(QKeySequence("Alt+J"), self.centralwidget, self.key_left)
+        self.shortcut2 = QShortcut(QKeySequence("Alt+K"), self.centralwidget, self.key_right)
+        self.shortcut3 = QShortcut(QKeySequence("Alt+Space"), self.centralwidget, self.shorcut_spacebar)
+        # Connect Combobox
+        self.savedBehaviorComboBox.currentIndexChanged.connect(self.update_entry_list)
+        self.entryNoComboBox.currentIndexChanged.connect(self.update_parameter)
+        
         
     def uploadData(self):
         filepath, _ = QFileDialog.getOpenFileName(None, "Upload Data", 
