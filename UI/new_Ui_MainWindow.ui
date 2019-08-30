@@ -17,7 +17,7 @@
    <string>Behavior Mapping</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="Main_Tab">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -38,11 +38,11 @@
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="tab_2">
+    <widget class="QWidget" name="Data_Tab">
      <attribute name="title">
       <string>Data</string>
      </attribute>
-     <widget class="QTableWidget" name="tableWidget_2">
+     <widget class="QTableWidget" name="Data_Table">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -103,11 +103,11 @@
        </property>
       </column>
      </widget>
-     <widget class="QPushButton" name="pushButton_8">
+     <widget class="QPushButton" name="Data_Import_Button">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>10</y>
+        <y>7</y>
         <width>113</width>
         <height>32</height>
        </rect>
@@ -117,7 +117,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="Label_Tab">
      <attribute name="title">
       <string>Label</string>
      </attribute>
@@ -130,7 +130,7 @@
         <height>401</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout"/>
+      <layout class="QHBoxLayout" name="Label_Ant_Layout"/>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_2">
       <property name="geometry">
@@ -141,7 +141,7 @@
         <height>401</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+      <layout class="QHBoxLayout" name="Label_Individual_Layout"/>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_3">
       <property name="geometry">
@@ -152,14 +152,14 @@
         <height>401</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3"/>
+      <layout class="QHBoxLayout" name="Label_Population_Layout"/>
      </widget>
-     <widget class="QSlider" name="horizontalSlider">
+     <widget class="QSlider" name="Label_HSlider">
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>450</y>
-        <width>1261</width>
+        <y>453</y>
+        <width>1181</width>
         <height>22</height>
        </rect>
       </property>
@@ -167,7 +167,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="Label_Play_Button">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -180,47 +180,40 @@
        <string>Play</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="Label_Frame_Number_Label">
       <property name="geometry">
        <rect>
-        <x>1350</x>
-        <y>450</y>
+        <x>1300</x>
+        <y>446</y>
         <width>81</width>
-        <height>20</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
        <string>0/0</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QSpinBox" name="spinBox">
+     <widget class="QSpinBox" name="Label_Speed_SpinBox">
       <property name="geometry">
        <rect>
-        <x>400</x>
-        <y>490</y>
+        <x>130</x>
+        <y>487</y>
         <width>48</width>
         <height>24</height>
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="Label_Left_Button">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>480</y>
-        <width>51</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&gt;</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>480</y>
+        <x>1250</x>
+        <y>450</y>
         <width>51</width>
         <height>32</height>
        </rect>
@@ -229,37 +222,24 @@
        <string>&lt;</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_4">
+     <widget class="QPushButton" name="Label_Right_Button">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>480</y>
+        <x>1380</x>
+        <y>450</y>
         <width>51</width>
         <height>32</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;&lt;</string>
+       <string>&gt;</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_5">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>480</y>
-        <width>51</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&gt;&gt;</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="comboBox_3">
+     <widget class="QComboBox" name="Label_Population_ComboBox">
       <property name="geometry">
        <rect>
         <x>1223</x>
-        <y>400</y>
+        <y>407</y>
         <width>211</width>
         <height>26</height>
        </rect>
@@ -275,11 +255,11 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_4">
+     <widget class="QComboBox" name="Label_Individual_ComboBox">
       <property name="geometry">
        <rect>
         <x>740</x>
-        <y>400</y>
+        <y>407</y>
         <width>211</width>
         <height>26</height>
        </rect>
@@ -305,11 +285,11 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_5">
+     <widget class="QComboBox" name="Label_Ant_ComboBox">
       <property name="geometry">
        <rect>
         <x>260</x>
-        <y>400</y>
+        <y>406</y>
         <width>211</width>
         <height>26</height>
        </rect>
@@ -343,11 +323,11 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="editBehaviorLabel_2">
+     <widget class="QLabel" name="Label_tSNE_Label">
       <property name="geometry">
        <rect>
         <x>490</x>
-        <y>410</y>
+        <y>409</y>
         <width>221</width>
         <height>16</height>
        </rect>
@@ -356,11 +336,11 @@
        <string>tSNE: (0,0)</string>
       </property>
      </widget>
-     <widget class="QLabel" name="editBehaviorLabel_3">
+     <widget class="QLabel" name="Label_Filename_Label">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>400</y>
+        <y>408</y>
         <width>221</width>
         <height>16</height>
        </rect>
@@ -369,7 +349,7 @@
        <string>Filename: </string>
       </property>
      </widget>
-     <widget class="QLabel" name="addBehaviorLabel">
+     <widget class="QLabel" name="Label_Behavior_Label">
       <property name="geometry">
        <rect>
         <x>590</x>
@@ -382,7 +362,7 @@
        <string>Behavior:</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="addBehaviorLineEdit">
+     <widget class="QLineEdit" name="Label_Add_Behavior_LineEdit">
       <property name="geometry">
        <rect>
         <x>660</x>
@@ -395,7 +375,7 @@
        <enum>Qt::ClickFocus</enum>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_6">
+     <widget class="QPushButton" name="Label_Add_Button">
       <property name="geometry">
        <rect>
         <x>760</x>
@@ -408,7 +388,7 @@
        <string>Add</string>
       </property>
      </widget>
-     <widget class="QLabel" name="editBehaviorLabel">
+     <widget class="QLabel" name="Label_Behavior_Label_2">
       <property name="geometry">
        <rect>
         <x>950</x>
@@ -421,7 +401,7 @@
        <string>Behavior:</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="editBehaviorComboBox">
+     <widget class="QComboBox" name="Label_Behavior_ComboBox">
       <property name="geometry">
        <rect>
         <x>1040</x>
@@ -437,7 +417,7 @@
        <enum>Qt::TabFocus</enum>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_7">
+     <widget class="QPushButton" name="Label_Enter_Button">
       <property name="geometry">
        <rect>
         <x>1300</x>
@@ -463,7 +443,7 @@
        <string>-</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="editBehaviorStopBox">
+     <widget class="QLineEdit" name="Label_Stop_Frame">
       <property name="geometry">
        <rect>
         <x>1180</x>
@@ -479,7 +459,7 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="editBehaviorFrLabel">
+     <widget class="QLabel" name="Label_Frame_Range_Label">
       <property name="geometry">
        <rect>
         <x>930</x>
@@ -492,7 +472,7 @@
        <string>Frame Range:</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="editBehaviorStopBox_2">
+     <widget class="QLineEdit" name="Label_Start_Frame">
       <property name="geometry">
        <rect>
         <x>1040</x>
@@ -508,20 +488,20 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="addBehaviorLabel_2">
+     <widget class="QLabel" name="Label_Video_Speed_Label">
       <property name="geometry">
        <rect>
-        <x>280</x>
+        <x>70</x>
         <y>490</y>
-        <width>101</width>
+        <width>51</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
-       <string>Playback Speed: </string>
+       <string>Speed:</string>
       </property>
      </widget>
-     <widget class="QLabel" name="editBehaviorFrLabel_2">
+     <widget class="QLabel" name="Label_Comment_Label">
       <property name="geometry">
        <rect>
         <x>950</x>
@@ -534,7 +514,7 @@
        <string>Comment:</string>
       </property>
      </widget>
-     <widget class="QPlainTextEdit" name="plainTextEdit">
+     <widget class="QPlainTextEdit" name="Label_Comment_TextEdit">
       <property name="geometry">
        <rect>
         <x>1040</x>
@@ -571,11 +551,11 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_4">
+    <widget class="QWidget" name="Behavior_Tab">
      <attribute name="title">
       <string>Behaviors</string>
      </attribute>
-     <widget class="QTableWidget" name="tableWidget">
+     <widget class="QTableWidget" name="Behavior_Table">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -716,15 +696,15 @@
       </column>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_3">
+    <widget class="QWidget" name="Preview_Tab">
      <attribute name="title">
       <string>Preview</string>
      </attribute>
-     <widget class="QPushButton" name="saveFilenameButton">
+     <widget class="QPushButton" name="Preview_Save_Button">
       <property name="geometry">
        <rect>
-        <x>1130</x>
-        <y>610</y>
+        <x>1250</x>
+        <y>690</y>
         <width>113</width>
         <height>32</height>
        </rect>
@@ -733,7 +713,7 @@
        <string>Save</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="changeFrameButton">
+     <widget class="QPushButton" name="Preview_Update_Button">
       <property name="geometry">
        <rect>
         <x>410</x>
@@ -781,9 +761,9 @@
         <height>411</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="saveFilenameVideoLayout"/>
+      <layout class="QHBoxLayout" name="Preview_Ant_Layout"/>
      </widget>
-     <widget class="QLineEdit" name="saveBehaviorStopBox">
+     <widget class="QLineEdit" name="Preview_Stop_Frame_LineEdit">
       <property name="geometry">
        <rect>
         <x>250</x>
@@ -802,9 +782,9 @@
      <widget class="QLabel" name="saveFilenameLabel">
       <property name="geometry">
        <rect>
-        <x>879</x>
-        <y>594</y>
-        <width>231</width>
+        <x>920</x>
+        <y>630</y>
+        <width>131</width>
         <height>16</height>
        </rect>
       </property>
@@ -815,7 +795,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QComboBox" name="savedBehaviorComboBox">
+     <widget class="QComboBox" name="Preview_Behavior_ComboBox">
       <property name="geometry">
        <rect>
         <x>130</x>
@@ -828,10 +808,10 @@
        <cursorShape>PointingHandCursor</cursorShape>
       </property>
      </widget>
-     <widget class="QPushButton" name="saveFilenamePlayButton">
+     <widget class="QPushButton" name="Preview_Play_Button">
       <property name="geometry">
        <rect>
-        <x>650</x>
+        <x>670</x>
         <y>470</y>
         <width>113</width>
         <height>32</height>
@@ -841,11 +821,11 @@
        <string>Play</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="saveFilenameBox">
+     <widget class="QLineEdit" name="Preview_Filename_LineEdit">
       <property name="geometry">
        <rect>
-        <x>869</x>
-        <y>614</y>
+        <x>1100</x>
+        <y>630</y>
         <width>241</width>
         <height>21</height>
        </rect>
@@ -854,7 +834,7 @@
        <enum>Qt::ClickFocus</enum>
       </property>
      </widget>
-     <widget class="QComboBox" name="entryNoComboBox">
+     <widget class="QComboBox" name="Preview_Entry_ComboBox">
       <property name="geometry">
        <rect>
         <x>130</x>
@@ -864,7 +844,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="tSNE_YmeanLabel">
+     <widget class="QLabel" name="Preview_tSNEY_Label">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -877,7 +857,7 @@
        <string>tSNE Y (mean): NaN</string>
       </property>
      </widget>
-     <widget class="QLabel" name="tSNE_XmeanLabel">
+     <widget class="QLabel" name="Preview_tSNEX_Label">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -916,7 +896,7 @@
        <string>Saved Behavior</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_6">
+     <widget class="QComboBox" name="Preview_Ant_ComboBox">
       <property name="geometry">
        <rect>
         <x>370</x>
@@ -941,7 +921,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_7">
+     <widget class="QComboBox" name="Preview_tSNE_ComboBox">
       <property name="geometry">
        <rect>
         <x>1120</x>
@@ -980,7 +960,7 @@
         <height>411</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="saveFilenameVideoLayout_2"/>
+      <layout class="QHBoxLayout" name="Preview_tSNE_Layout"/>
      </widget>
      <widget class="QLabel" name="editBehaviorLabel_4">
       <property name="geometry">
@@ -995,7 +975,7 @@
        <string>tSNE: (0,0)</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="saveBehaviorStopBox_2">
+     <widget class="QLineEdit" name="Preview_Start_Frame_LineEdit">
       <property name="geometry">
        <rect>
         <x>130</x>
@@ -1011,7 +991,7 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="tSNE_YmeanLabel_2">
+     <widget class="QLabel" name="Preview_Comment_Label">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -1024,7 +1004,7 @@
        <string>Comment:</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_8">
+     <widget class="QComboBox" name="Preview_Ant_Save_ComboBox">
       <property name="geometry">
        <rect>
         <x>1130</x>
@@ -1049,7 +1029,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_9">
+     <widget class="QComboBox" name="Preview_tSNE_Save_ComboBox">
       <property name="geometry">
        <rect>
         <x>1130</x>
@@ -1079,6 +1059,38 @@
        </property>
       </item>
      </widget>
+     <widget class="QLabel" name="saveFilenameLabel_2">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>540</y>
+        <width>231</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Ant Video:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="saveFilenameLabel_3">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>560</y>
+        <width>231</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>tSNE Plot:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -1097,6 +1109,7 @@
     </property>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
+    <addaction name="actionImport_Data"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -1109,6 +1122,11 @@
   <action name="actionSave_as">
    <property name="text">
     <string>Save as ...</string>
+   </property>
+  </action>
+  <action name="actionImport_Data">
+   <property name="text">
+    <string>Import Data</string>
    </property>
   </action>
  </widget>

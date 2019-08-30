@@ -4,3 +4,4 @@ widgets/__pycache__/*
 __pycache__
 test/*
 *.db
+virtual_env_BMGUI/*
