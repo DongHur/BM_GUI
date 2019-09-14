@@ -21,19 +21,6 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-class Worker(QObject):
-    play = pyqtSignal()
-    pause = pyqtSignal()
-    def __init__(self,*args, **kwargs):
-        super(Worker, self).__init__()
-
-    @pyqtSlot()
-    def worker_play(self):
-        self.play.emit()
-    @pyqtSlot()
-    def worker_pause(self):
-        self.pause.emit()
-
 class Ui_MainWindow(object):
     def __init__(self, *args, **kwargs):
         super(Ui_MainWindow, self).__init__()
@@ -58,12 +45,10 @@ class Ui_MainWindow(object):
         self.horizontalSlider = QSlider(self.centralwidget)
         self.horizontalSlider.setGeometry(QRect(20, 330, 1401, 22))
         self.horizontalSlider.setOrientation(Qt.Horizontal)
-        self.horizontalSlider.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.horizontalSlider.setObjectName("horizontalSlider")
 
         self.playButton = QPushButton(self.centralwidget)
         self.playButton.setGeometry(QRect(10, 360, 113, 32))
-        self.playButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.playButton.setObjectName("playButton")
 
         self.FrameLabel = QLabel(self.centralwidget)
@@ -77,11 +62,9 @@ class Ui_MainWindow(object):
 
         self.frameBackButton = QPushButton(self.centralwidget)
         self.frameBackButton.setGeometry(QRect(410, 360, 50, 32))
-        self.frameBackButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.frameBackButton.setObjectName("frameBackButton")
         self.frameFrontButton = QPushButton(self.centralwidget)
         self.frameFrontButton.setGeometry(QRect(460, 360, 50, 32))
-        self.frameFrontButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.frameFrontButton.setObjectName("frameFrontButton")
         self.frameFrontButton.clicked.connect(self.key_right)
         self.frameBackButton.clicked.connect(self.key_left)
@@ -108,7 +91,6 @@ class Ui_MainWindow(object):
 
         self.stopButton = QPushButton(self.centralwidget)
         self.stopButton.setGeometry(QRect(130, 360, 113, 32))
-        self.stopButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.stopButton.setObjectName("stopButton")
 
         ########################
@@ -129,7 +111,6 @@ class Ui_MainWindow(object):
 
         self.addBehaviorButton = QPushButton(self.frame)
         self.addBehaviorButton.setGeometry(QRect(250, 20, 113, 41))
-        self.addBehaviorButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.addBehaviorButton.setObjectName("addBehaviorButton")
         
         ##########################
@@ -165,12 +146,10 @@ class Ui_MainWindow(object):
 
         self.editBehaviorEnterButton = QPushButton(self.editBehaviorFrame)
         self.editBehaviorEnterButton.setGeometry(QtCore.QRect(400, 20, 113, 41))
-        self.editBehaviorEnterButton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.editBehaviorEnterButton.setObjectName("editBehaviorEnterButton")
 
         self.editBehaviorComboBox = QComboBox(self.editBehaviorFrame)
         self.editBehaviorComboBox.setGeometry(QtCore.QRect(10, 30, 210, 26))
-        self.editBehaviorComboBox.setCursor(QCursor(Qt.PointingHandCursor))
         self.editBehaviorComboBox.setObjectName("editBehaviorComboBox")
 
         ##########
@@ -281,16 +260,9 @@ class Ui_MainWindow(object):
         self.addBehaviorLineEdit.returnPressed.connect(self.addBehavior)
         self.editBehaviorStopBox.returnPressed.connect(self.editBehavior)
 
-        # create worker
-        self.worker = Worker()
-        self.thread = QThread()
-        self.thread.start()
-        self.worker.moveToThread(self.thread)
-        self.worker.play.connect(self.play)
-        self.worker.pause.connect(self.pause)
         # connect button
-        self.playButton.pressed.connect(self.worker.worker_play)
-        self.stopButton.clicked.connect(self.worker.worker_pause)
+        self.playButton.pressed.connect(self.play)
+        self.stopButton.clicked.connect(self.pause)
         self.addBehaviorButton.clicked.connect(self.addBehavior)
         self.editBehaviorEnterButton.clicked.connect(self.editBehavior)
 
@@ -352,7 +324,7 @@ class Ui_MainWindow(object):
         if folder != '':
             filename = folder.split('/')[-1]
             # total density plot
-            self.densityGraph.set_newfile(folder+'/total_map.fig')
+            self.densityGraph.set_newfile(folder+'/../total_map.fig')
             self.densitycanvas.draw()
             # individual density plot
             self.indDensityGraph.set_newfile(folder+'/indiv_mat.fig')
