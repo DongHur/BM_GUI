@@ -9,6 +9,7 @@ class Data_Tab():
     def __init__(self, parent):
         self.parent = parent
         self.setup_connection()
+        self.setup()
     def setup(self):
         for row_idx in range(len(self.parent.main_df)):
             self.add_row(

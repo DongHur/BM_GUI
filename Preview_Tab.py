@@ -6,6 +6,7 @@ class Preview_Tab():
     def __init__(self, parent):
         self.test = "test"
         self.parent = parent
+        self.setup()
     def setup(self):
         # self.smallBPGraph = BP_Graph() # small body point graph
         # self.smallBPcanvas = FigureCanvas(self.smallBPGraph)

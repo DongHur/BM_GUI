@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
 class Behaviors_Tab():
     def __init__(self, parent):
         self.parent = parent
+        self.setup()
     def setup(self):
         for folder_key in list(self.parent.Behavior_Store.keys()):
             df = self.parent.Behavior_Store[folder_key]

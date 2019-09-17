@@ -54,9 +54,16 @@ class BP_Canvas(FigureCanvas):
             print(":: Could not recognize mode")
         
         # TODO: setup other mode to take out translational and rotational
-        self.update_canvas(frame=0)
+        self.update_canvas(frame=self.cur_frame)
         # cap.release()
         pass
+    def next_frame(self):
+        if self.cur_frame >= self.num_frame-1:
+            error=True
+        else:
+            self.update_canvas(self.cur_frame+1)
+            error=False
+        return error
     def update_canvas(self, frame=0):
         self.ax.clear()
         self.cur_frame = frame
@@ -85,6 +92,9 @@ class BP_Canvas(FigureCanvas):
         marker = 'o'
         s=4
         # plot graph
+        self.ax.margins(0.8)
+        self.ax.get_xaxis().set_visible(False)
+        self.ax.get_yaxis().set_visible(False)
         self.ax.plot(self.data[0:4,0,frame], self.data[0:4,1,frame], marker=marker, markersize=s)
         self.ax.plot(self.data[4:8,0,frame], self.data[4:8,1,frame], marker=marker, markersize=s)
         self.ax.plot(self.data[8:11,0,frame], self.data[8:11,1,frame], marker=marker, markersize=s)
