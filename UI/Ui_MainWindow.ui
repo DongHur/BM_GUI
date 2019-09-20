@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -525,7 +525,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>0</y>
+        <y>10</y>
         <width>113</width>
         <height>32</height>
        </rect>
@@ -538,9 +538,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>30</y>
+        <y>50</y>
         <width>1431</width>
-        <height>701</height>
+        <height>681</height>
        </rect>
       </property>
       <property name="sizeAdjustPolicy">
@@ -626,6 +626,19 @@
        </property>
       </column>
      </widget>
+     <widget class="QPushButton" name="Beh_Export_Button">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>10</y>
+        <width>113</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Export</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -697,22 +710,6 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="saveFilenameLabel">
-      <property name="geometry">
-       <rect>
-        <x>963</x>
-        <y>664</y>
-        <width>131</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Filename</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
      <widget class="QComboBox" name="Preview_Behavior_ComboBox">
       <property name="geometry">
        <rect>
@@ -737,19 +734,6 @@
       </property>
       <property name="text">
        <string>Play</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="Preview_Filename_LineEdit">
-      <property name="geometry">
-       <rect>
-        <x>1113</x>
-        <y>662</y>
-        <width>241</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
       </property>
      </widget>
      <widget class="QComboBox" name="Preview_Entry_ComboBox">
@@ -902,17 +886,19 @@
     </property>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
-    <addaction name="actionImport_Data"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>Save         cmd+s</string>
    </property>
   </action>
   <action name="actionSave_as">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save as ...</string>
    </property>

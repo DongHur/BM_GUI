@@ -14,9 +14,6 @@ from widgets.Ethogram import Ethogram
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
-from tools.DataConv import h5_to_npy, npy_to_h5
-
-
 class Label_Tab():
     def __init__(self, parent):
         self.parent = parent

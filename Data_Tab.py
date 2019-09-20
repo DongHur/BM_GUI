@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
 
 class Data_Tab():
     def __init__(self, parent):
@@ -56,11 +56,17 @@ class Data_Tab():
         self.parent.Data_Table.setItem(row_idx, 2, QTableWidgetItem(FolderPath))
         pass
     def delete_row(self):
-        indices = self.parent.Data_Table.selectionModel().selectedRows() 
-        for index in sorted(indices, reverse=True):
-            self.parent.Data_Table.removeRow(index.row())
-            self.parent.main_df.drop(index.row(), inplace=True)
-        self.parent.main_df.reset_index(drop=True, inplace=True)
+        # verify if user wants to delete
+        choice = QMessageBox.question(self.parent, 'Delete Rows',
+            "Are you sure you want to delete these rows? \nWarning! if you delete these row, then your behavior data will be messed up.",
+            QMessageBox.Yes | QMessageBox.No)
+        if choice == QMessageBox.Yes:
+            # delete rows
+            indices = self.parent.Data_Table.selectionModel().selectedRows() 
+            for index in sorted(indices, reverse=True):
+                self.parent.Data_Table.removeRow(index.row())
+                self.parent.main_df.drop(index.row(), inplace=True)
+            self.parent.main_df.reset_index(drop=True, inplace=True)
         pass
 
 

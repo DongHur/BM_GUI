@@ -1,13 +1,19 @@
 from collections import Counter
 import glob
+import pandas as pd
 
 from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QFileDialog
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
 
 from widgets.BP_Canvas import BP_Canvas
 from widgets.Individual_Canvas import Individual_Canvas
 from widgets.Total_Canvas import Total_Canvas
+
+from tools.Transform import translational
 
 class Preview_Tab():
     def __init__(self, parent):
@@ -155,9 +161,82 @@ class Preview_Tab():
         self.BPcanvas.repaint()
         pass
     def save(self):
-        # TODO
+        # extract UI data
+        Preview_map_Mode = self.parent.Preview_map_ComboBox.currentText()
+        behavior = self.parent.Preview_Behavior_ComboBox.currentText()
+        entry = int(self.parent.Preview_Entry_ComboBox.currentText())
+        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.text())
+        stop_fr = int(self.parent.Preview_Stop_Frame_LineEdit.text())
+        # find corresponding file based on above parameter
+        label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
+        label_key = label_entry['folder_key']
+        main_data = self.parent.main_df[self.parent.main_df["folder_key"]==label_key]
+        label_dir = main_data['folder_path'].iloc[0] 
+        # save file dialog at label_dir
+        dir_suggestion = "{}/{}_{}_{}_fr{}-{}.mp4".format(label_dir,label_key,behavior,entry, start_fr, stop_fr)
+        fig_title = "{} {} entry {}, frames={}-{}".format(label_key,behavior,entry, start_fr, stop_fr)
+        filepath = QFileDialog.getSaveFileName(self.parent, "Save Video Image",  dir_suggestion,"MP4 Video (*.mp4)")[0]
+        print(filepath)
+        if filepath != "":
+            # find bp file in dir
+            DLC_dir = glob.glob(label_dir + "/*.h5")[0]
+            store = pd.HDFStore(DLC_dir, mode='r')
+            df = store['df_with_missing']
+            num_bp, num_dim = len(list(df.columns.levels[1])), len(list(df.columns.levels[2]))
+            num_frame = len(df)
+            bp_data = df.T.to_numpy().reshape(num_bp, num_dim, num_frame)
+            bp_data_trans, _ = translational(bp_data, origin_bp=2)
+            print(bp_data_trans.shape)
+            store.close()
+            # creates animation writer
+            writer = animation.FFMpegWriter(fps=15, metadata=dict(arist="Dong Hur"), bitrate=1800)
+            # setup animation plot
+            self.lines = []
+            fig = plt.figure()
+            ax1 = plt.axes(xlim=(-200,200), ylim=(-200,200))
+            line, = ax1.plot([],[],'-o')
+            plt.gca().set_aspect('equal', 'box')
+            plt.title(fig_title, fontsize=8)
+            plt.tick_params(axis='both', labelsize=6)
+            for index in range(9):
+                lobj = ax1.plot([],[], '-o')[0]
+                self.lines.append(lobj)
+            # start animating through each iteration
+            self.alpha = 1
+            line_ani = animation.FuncAnimation(fig, self._update_graph,  init_func=self._init_graph,
+                frames=list(range(start_fr, stop_fr)), fargs=(plt, bp_data_trans, self.lines), interval=50, blit=True)
+            # save animation to proper file
+            line_ani.save(filepath, writer=writer)
         pass
-
+    def _init_graph(self):
+            for line in self.lines:
+                line.set_data([],[])
+            return self.lines
+    def _update_graph(self, frame, plt, data, lines, mode="ant_bp"):
+        # plot ant points for specific time point t; specific to out setup with 30bp ants
+        # data format: num_bp x (X_coord, Y_coord) x t
+        if mode=="ant_bp":
+            lines[0].set_data(data[0:4,0,frame], data[0:4,1,frame])
+            lines[1].set_data(data[4:8,0,frame], data[4:8,1,frame])
+            lines[2].set_data(data[8:11,0,frame], data[8:11,1,frame])
+            lines[3].set_data(data[11:14,0,frame], data[11:14,1,frame])
+            lines[4].set_data(data[14:17,0,frame], data[14:17,1,frame])
+            lines[5].set_data(data[17:21,0,frame], data[17:21,1,frame])
+            lines[6].set_data(data[21:24,0,frame], data[21:24,1,frame])
+            lines[7].set_data(data[24:27,0,frame], data[24:27,1,frame])
+            lines[8].set_data(data[27:30,0,frame], data[27:30,1,frame])
+        elif mode=="overlay_ant_bp":
+            plt.plot(data[0:4,0,frame], data[0:4,1,frame], '-bo', alpha=self.alpha)
+            plt.plot(data[4:8,0,frame], data[4:8,1,frame], '-go', alpha=self.alpha)
+            plt.plot(data[8:11,0,frame], data[8:11,1,frame], '-ro', alpha=self.alpha)
+            plt.plot(data[11:14,0,frame], data[11:14,1,frame], '-co', alpha=self.alpha)
+            plt.plot(data[14:17,0,frame], data[14:17,1,frame], '-mo', alpha=self.alpha)
+            plt.plot(data[17:21,0,frame], data[17:21,1,frame], '-yo', alpha=self.alpha)
+            plt.plot(data[21:24,0,frame], data[21:24,1,frame], '-ko', alpha=self.alpha)
+            plt.plot(data[24:27,0,frame], data[24:27,1,frame], '-go', alpha=self.alpha)
+            plt.plot(data[27:30,0,frame], data[27:30,1,frame], '-ro', alpha=self.alpha)
+            self.alpha = 0.15
+        return lines  
 
 
 

@@ -34,6 +34,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setup_data()
         self.setup_tab()
+        self.setup_connection()
         self.setup_shortcut()
         self.show()
     def setup_data(self):
@@ -73,6 +74,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.LabelTab = Label_Tab(self)
         self.BehaviorsTab = Behaviors_Tab(self)
         self.PreviewTab = Preview_Tab(self)
+        pass
+    def setup_connection(self):
+        self.actionSave.triggered.connect(self.save_app)
         pass
     def setup_shortcut(self):
         self.shortcut = QShortcut(QKeySequence("Ctrl+S"), self.centralwidget, self.save_app)
