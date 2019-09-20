@@ -63,7 +63,7 @@ class BP_Canvas(FigureCanvas):
         else:
             self.update_canvas(self.cur_frame+1)
             error=False
-        return error
+        return error, self.cur_frame
     def update_canvas(self, frame=0):
         self.ax.clear()
         self.cur_frame = frame

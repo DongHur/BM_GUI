@@ -51,7 +51,7 @@ class Individual_Canvas(FigureCanvas):
         else:
             self.update_canvas(self.frame+1)
             error=False
-        pass
+        return error, self.frame
 
 
 

@@ -33,6 +33,7 @@ class Label_Tab():
         pass
     def update_widgets(self):
         self.parent.Label_Filename_ComboBox.addItems(self.parent.main_df['folder_key'])
+        self.parent.Label_Behavior_ComboBox.addItems(self.parent.beh_key_df['behavior'])
         pass
     def setup_connection(self):
         self.parent.Label_Filename_ComboBox.currentIndexChanged.connect(
@@ -44,6 +45,8 @@ class Label_Tab():
         self.parent.Label_Population_ComboBox.currentIndexChanged.connect(
             self.update_tot_plot)
         self.parent.Label_Play_Button.clicked.connect(self.toggle_play)
+        self.parent.Label_Add_Button.clicked.connect(self.add_behavior_key)
+        self.parent.Label_Enter_Button.clicked.connect(self.add_behavior)
         pass
     def init_plot(self):
         # append bodypoint
@@ -79,14 +82,8 @@ class Label_Tab():
             self.cur_bp_dir = BP_list[0]
         if len(embed_list)==1:
             self.cur_embed_dir = embed_list[0]
-        if len(ind_density_list)==1:
-            self.cur_ind_density_dir = ind_density_list[0]
-        if len(tot_density_list)==1:
-            self.cur_tot_density_dir = tot_density_list[0]
         if len(video_list)==1:
             self.cur_video_dir = video_list[0]
-        if len(Watershed_list)==1:
-            self.cur_watershed_dir = Watershed_list[0]
         if len(Cluster_list)==1:
             self.cluster_dir = Cluster_list[0]
         # populate plot
@@ -108,9 +105,14 @@ class Label_Tab():
             print(":: No Ant Plot Mode")
         pass
     def update_ind_plot(self):
+        # extract parameter based on ui
         Label_Individual_Mode = self.parent.Label_Individual_ComboBox.currentText()
+        # populate proper figure
         if Label_Individual_Mode == "Points (HDBSCAN)":
-            self.IndDensityCanvas.setup_canvas(embed=self.cur_embed_dir, cluster=self.cluster_dir, mode="Points (HDBSCAN)")
+            self.IndDensityCanvas.setup_canvas(
+                embed = self.cur_embed_dir, 
+                cluster = self.cluster_dir, 
+                mode = "Points (HDBSCAN)")
         else:
             print(":: No Individual Plot Mode")
         pass
@@ -141,9 +143,37 @@ class Label_Tab():
         if error_ethogram or error_bp or error_ind:
             self.timer.stop()
         pass
-
-
-
+    # Add behavior
+    def add_behavior_key(self):
+        behavior = self.parent.Label_Add_Behavior_LineEdit.text()
+        self.parent.Label_Add_Behavior_LineEdit.setText("")
+        self.parent.Label_Add_Behavior_LineEdit.repaint()
+        # add to other widgets
+        self.parent.Label_Behavior_ComboBox.addItem(behavior)
+        # store in dataframe
+        self.parent.beh_key_df=self.parent.beh_key_df.append({'behavior': behavior}, ignore_index=True)
+        print(behavior)
+        pass
+    def add_behavior(self):
+        folder_key = self.parent.Label_Filename_ComboBox.currentText()
+        behavior = self.parent.Label_Behavior_ComboBox.currentText()
+        start_fr = self.parent.Label_Start_Frame.text()
+        stop_fr = self.parent.Label_Stop_Frame.text()
+        comment = self.parent.Label_Comment_TextEdit.toPlainText()
+        # reset input box
+        self.parent.Label_Start_Frame.setText("")
+        self.parent.Label_Stop_Frame.setText("")
+        self.parent.Label_Comment_TextEdit.setPlainText("")
+        self.parent.Label_Comment_TextEdit.repaint()
+        # store in dataframe
+        self.parent.beh_df = self.parent.beh_df.append({
+            'folder_key': folder_key, 
+            'behavior': behavior, 
+            'start_fr': start_fr, 
+            'stop_fr': stop_fr, 
+            'comment': comment
+            }, ignore_index=True)
+        pass
 
 
 

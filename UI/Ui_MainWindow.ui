@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -53,6 +53,9 @@
       </property>
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>200</number>
@@ -114,6 +117,19 @@
       </property>
       <property name="text">
        <string>Import Data...</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="Delete_Data_Button">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>10</y>
+        <width>113</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delete</string>
       </property>
      </widget>
     </widget>
@@ -298,19 +314,6 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="Label_tSNE_Label">
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>409</y>
-        <width>221</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>tSNE: (0,0)</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="Label_Behavior_Label">
       <property name="geometry">
        <rect>
@@ -340,8 +343,8 @@
      <widget class="QPushButton" name="Label_Add_Button">
       <property name="geometry">
        <rect>
-        <x>290</x>
-        <y>620</y>
+        <x>280</x>
+        <y>617</y>
         <width>101</width>
         <height>32</height>
        </rect>
@@ -353,8 +356,8 @@
      <widget class="QLabel" name="Label_Behavior_Label_2">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>660</y>
+        <x>400</x>
+        <y>620</y>
         <width>61</width>
         <height>16</height>
        </rect>
@@ -366,8 +369,8 @@
      <widget class="QComboBox" name="Label_Behavior_ComboBox">
       <property name="geometry">
        <rect>
-        <x>140</x>
-        <y>660</y>
+        <x>488</x>
+        <y>617</y>
         <width>210</width>
         <height>26</height>
        </rect>
@@ -395,8 +398,8 @@
      <widget class="QLabel" name="dashLabel">
       <property name="geometry">
        <rect>
-        <x>250</x>
-        <y>690</y>
+        <x>600</x>
+        <y>650</y>
         <width>16</width>
         <height>16</height>
        </rect>
@@ -408,8 +411,8 @@
      <widget class="QLineEdit" name="Label_Stop_Frame">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>690</y>
+        <x>630</x>
+        <y>650</y>
         <width>91</width>
         <height>21</height>
        </rect>
@@ -424,8 +427,8 @@
      <widget class="QLabel" name="Label_Frame_Range_Label">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>690</y>
+        <x>400</x>
+        <y>650</y>
         <width>91</width>
         <height>20</height>
        </rect>
@@ -437,8 +440,8 @@
      <widget class="QLineEdit" name="Label_Start_Frame">
       <property name="geometry">
        <rect>
-        <x>140</x>
-        <y>690</y>
+        <x>490</x>
+        <y>650</y>
         <width>91</width>
         <height>21</height>
        </rect>
@@ -454,7 +457,7 @@
       <property name="geometry">
        <rect>
         <x>400</x>
-        <y>620</y>
+        <y>690</y>
         <width>61</width>
         <height>20</height>
        </rect>
@@ -467,9 +470,9 @@
       <property name="geometry">
        <rect>
         <x>490</x>
-        <y>620</y>
+        <y>680</y>
         <width>351</width>
-        <height>111</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="focusPolicy">
@@ -518,71 +521,39 @@
      <attribute name="title">
       <string>Behaviors</string>
      </attribute>
+     <widget class="QPushButton" name="Delete_Beh_Data_Button">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>0</y>
+        <width>113</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delete</string>
+      </property>
+     </widget>
      <widget class="QTableWidget" name="Behavior_Table">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>40</y>
+        <y>30</y>
         <width>1431</width>
-        <height>711</height>
+        <height>701</height>
        </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>1431</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>1431</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="inputMethodHints">
-       <set>Qt::ImhNone</set>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
-      <property name="gridStyle">
-       <enum>Qt::CustomDashLine</enum>
-      </property>
-      <property name="sortingEnabled">
-       <bool>false</bool>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>150</number>
-      </attribute>
-      <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>30</number>
-      </attribute>
-      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-       <bool>false</bool>
+       <number>200</number>
       </attribute>
       <attribute name="horizontalHeaderStretchLastSection">
        <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="verticalHeaderStretchLastSection">
-       <bool>false</bool>
       </attribute>
       <column>
        <property name="text">
@@ -601,9 +572,6 @@
       <column>
        <property name="text">
         <string>Behavior</string>
-       </property>
-       <property name="toolTip">
-        <string notr="true"/>
        </property>
        <property name="font">
         <font>
@@ -632,34 +600,6 @@
       <column>
        <property name="text">
         <string>Frame Stop</string>
-       </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="textAlignment">
-        <set>AlignCenter</set>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>tSNE X (mean)</string>
-       </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="textAlignment">
-        <set>AlignCenter</set>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>tSNE Y (mean)</string>
        </property>
        <property name="font">
         <font>
@@ -704,23 +644,10 @@
        <string>Save</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="Preview_Update_Button">
-      <property name="geometry">
-       <rect>
-        <x>410</x>
-        <y>570</y>
-        <width>131</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Update</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="savedBehaviorEntryLabel">
       <property name="geometry">
        <rect>
-        <x>60</x>
+        <x>50</x>
         <y>540</y>
         <width>60</width>
         <height>16</height>
@@ -733,8 +660,8 @@
      <widget class="QLabel" name="saveDashLabel">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>570</y>
+        <x>235</x>
+        <y>571</y>
         <width>16</width>
         <height>16</height>
        </rect>
@@ -757,9 +684,9 @@
      <widget class="QLineEdit" name="Preview_Stop_Frame_LineEdit">
       <property name="geometry">
        <rect>
-        <x>250</x>
-        <y>570</y>
-        <width>91</width>
+        <x>253</x>
+        <y>571</y>
+        <width>96</width>
         <height>21</height>
        </rect>
       </property>
@@ -773,8 +700,8 @@
      <widget class="QLabel" name="saveFilenameLabel">
       <property name="geometry">
        <rect>
-        <x>920</x>
-        <y>630</y>
+        <x>963</x>
+        <y>664</y>
         <width>131</width>
         <height>16</height>
        </rect>
@@ -790,8 +717,8 @@
       <property name="geometry">
        <rect>
         <x>130</x>
-        <y>500</y>
-        <width>211</width>
+        <y>508</y>
+        <width>221</width>
         <height>26</height>
        </rect>
       </property>
@@ -815,8 +742,8 @@
      <widget class="QLineEdit" name="Preview_Filename_LineEdit">
       <property name="geometry">
        <rect>
-        <x>1100</x>
-        <y>630</y>
+        <x>1113</x>
+        <y>662</y>
         <width>241</width>
         <height>21</height>
        </rect>
@@ -829,43 +756,17 @@
       <property name="geometry">
        <rect>
         <x>130</x>
-        <y>540</y>
-        <width>211</width>
+        <y>536</y>
+        <width>221</width>
         <height>26</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="Preview_tSNEY_Label">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>640</y>
-        <width>241</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>tSNE Y (mean): NaN</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="Preview_tSNEX_Label">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>620</y>
-        <width>241</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>tSNE X (mean): NaN</string>
       </property>
      </widget>
      <widget class="QLabel" name="frameLabel2">
       <property name="geometry">
        <rect>
-        <x>67</x>
-        <y>574</y>
+        <x>66</x>
+        <y>572</y>
         <width>41</width>
         <height>16</height>
        </rect>
@@ -877,7 +778,7 @@
      <widget class="QLabel" name="savedBehaviorLabel">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>510</y>
         <width>101</width>
         <height>16</height>
@@ -890,7 +791,7 @@
      <widget class="QComboBox" name="Preview_Ant_ComboBox">
       <property name="geometry">
        <rect>
-        <x>370</x>
+        <x>373</x>
         <y>440</y>
         <width>211</width>
         <height>26</height>
@@ -912,10 +813,10 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="Preview_tSNE_ComboBox">
+     <widget class="QComboBox" name="Preview_map_ComboBox">
       <property name="geometry">
        <rect>
-        <x>1120</x>
+        <x>1123</x>
         <y>440</y>
         <width>211</width>
         <height>26</height>
@@ -923,22 +824,7 @@
       </property>
       <item>
        <property name="text">
-        <string>Points</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Points + Density</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Points + Watershed</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Points + Density + Watershed</string>
+        <string>Points (HDBSCAN)</string>
        </property>
       </item>
      </widget>
@@ -953,25 +839,12 @@
       </property>
       <layout class="QHBoxLayout" name="Preview_tSNE_Layout"/>
      </widget>
-     <widget class="QLabel" name="editBehaviorLabel_4">
-      <property name="geometry">
-       <rect>
-        <x>840</x>
-        <y>440</y>
-        <width>221</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>tSNE: (0,0)</string>
-      </property>
-     </widget>
      <widget class="QLineEdit" name="Preview_Start_Frame_LineEdit">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>570</y>
-        <width>91</width>
+        <x>133</x>
+        <y>571</y>
+        <width>93</width>
         <height>21</height>
        </rect>
       </property>
@@ -985,101 +858,30 @@
      <widget class="QLabel" name="Preview_Comment_Label">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>660</y>
-        <width>241</width>
-        <height>16</height>
+        <x>48</x>
+        <y>598</y>
+        <width>291</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
        <string>Comment:</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="Preview_Ant_Save_ComboBox">
+     <widget class="QLabel" name="Comment_Label">
       <property name="geometry">
        <rect>
-        <x>1130</x>
-        <y>540</y>
-        <width>211</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Skeleton</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Skeleton + Video</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Video</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="Preview_tSNE_Save_ComboBox">
-      <property name="geometry">
-       <rect>
-        <x>1130</x>
-        <y>570</y>
-        <width>211</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Points</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Points + Density</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Points + Watershed</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Points + Density + Watershed</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QLabel" name="saveFilenameLabel_2">
-      <property name="geometry">
-       <rect>
-        <x>870</x>
-        <y>540</y>
-        <width>231</width>
-        <height>16</height>
+        <x>133</x>
+        <y>603</y>
+        <width>361</width>
+        <height>121</height>
        </rect>
       </property>
       <property name="text">
-       <string>Ant Video:</string>
+       <string/>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="saveFilenameLabel_3">
-      <property name="geometry">
-       <rect>
-        <x>870</x>
-        <y>560</y>
-        <width>231</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>tSNE Plot:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
     </widget>

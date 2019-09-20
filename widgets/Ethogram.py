@@ -53,7 +53,7 @@ class Ethogram(FigureCanvas):
         else:
             self.update_canvas(self.frame+1)
             error=False
-        return error
+        return error, self.frame
 
 
 

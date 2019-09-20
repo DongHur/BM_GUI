@@ -39,7 +39,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def setup_data(self):
         # Parse Main Data
         self.BM_Main_Path = os.getcwd()+"/BM_MAIN_DATA.h5"
-        self.Main_Store = pd.HDFStore(self.BM_Main_Path, mode='a')
+        self.Main_Store = pd.HDFStore(self.BM_Main_Path)
         if '/main' in self.Main_Store.keys():
             # load main frame if it exist
             self.main_df = self.Main_Store['main']
@@ -48,23 +48,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # create main frame if it doesn't exist
             self.main_df = pd.DataFrame(columns=['folder_key', 'num_frames', 'folder_path'])
             self.Main_Store.put(key='main', value=self.main_df)
-        
-        # Parse Behavior Data
-        self.BM_Behavior_Path = os.getcwd()+"/BM_BEHAVIOR_DATA.h5"
-        self.Behavior_Store = pd.HDFStore(self.BM_Behavior_Path, mode='a')
-        
-        # TODO: add check up to see if this file exist in the first place in the main database
-        # for row_idx in range(len(self.main_df)):
-        #     if os.path.isdir(self.main_df.loc[row_idx, 'folder_path']):
-
-        # TODO: create a tool function converting h5 (2D) to numpy array (3D)
+        # get behavior table
+        if '/behavior' in self.Main_Store.keys():
+            self.beh_df = self.Main_Store['behavior']
+            print(self.beh_df)
+        else:
+            self.beh_df = pd.DataFrame(
+                columns=['folder_key', 'behavior', 'start_fr', 'stop_fr', 'comment'])
+            self.Main_Store.put(key='behavior', value=self.beh_df)
+        # get behaivor key table
+        if '/behavior_key' in self.Main_Store.keys():
+            # load behavior frame if it exist
+            self.beh_key_df = self.Main_Store['behavior_key']
+            print(self.beh_key_df)
+            print("YOOOO")
+        else:
+            # create behavior frame if it doesn't exist
+            self.beh_key_df = pd.DataFrame(columns=['behavior'])
+            self.Main_Store.put(key='behavior_key', value=self.beh_key_df)
         print(":: finished updating database")
         pass
     def setup_tab(self):
         self.DataTab = Data_Tab(self)
         self.LabelTab = Label_Tab(self)
         self.BehaviorsTab = Behaviors_Tab(self)
-        # self.PreviewTab = Preview_Tab(self)
+        self.PreviewTab = Preview_Tab(self)
         pass
     def setup_shortcut(self):
         self.shortcut = QShortcut(QKeySequence("Ctrl+S"), self.centralwidget, self.save_app)
@@ -73,7 +81,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # save app data
         print(":: SAVING ALL DATA")
         print(self.main_df)
+        print(self.beh_df)
+        print(self.beh_key_df)
         self.Main_Store.put(key='main', value=self.main_df)
+        self.Main_Store.put(key='behavior', value=self.beh_df)
+        self.Main_Store.put(key='behavior_key', value=self.beh_key_df)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
