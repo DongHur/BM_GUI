@@ -1,11 +1,14 @@
 import numpy as np
 import scipy.io as sio
 
+import matplotlib
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.ticker
+matplotlib.rc('xtick', labelsize=8) 
+matplotlib.rc('ytick', labelsize=8) 
 
 class Density_Canvas(FigureCanvas):
     def __init__(self, *args, **kwargs):

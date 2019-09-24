@@ -20,8 +20,8 @@ class Total_Canvas(FigureCanvas):
         self.xlim, self.ylim = (-100, 100), (-100, 100)
         self.cluster_colors = None
         self.X_H, self.Y_H, self.GH_conv = None, None, None
-    def setup_canvas(self, tot_dir, mode=""):
-        self.mode = mode
+    def setup_canvas(self, tot_dir):
+        self.mode = "HDBSCAN Cluster"
         # combine all data
         for directory in tot_dir:
             # combine embed data
@@ -30,28 +30,25 @@ class Total_Canvas(FigureCanvas):
             # combine cluster laber data
             label_i = np.load(directory+"/cluster.npy")
             self.label_data = np.hstack((self.label_data, label_i)) if self.label_data is not None else label_i
-        # populate proper plot mode
-        if mode == "HDBSCAN Cluster":
-            # format cluster color
-            num_cluster = np.max(self.label_data)+1
-            color_palette = sns.color_palette('hls', num_cluster)
-            self.cluster_colors = [color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in self.label_data]
-        elif mode =="Density":
-            # build density plot
-            self.GH_conv, self.X_H, self.Y_H = self.gaussian_conv(self.embed_data)
+        # combine cluster color data
+        num_cluster = np.max(self.label_data)+1
+        color_palette = sns.color_palette('hls', num_cluster)
+        self.cluster_colors = [color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in self.label_data]
+        # compute density data
+        self.GH_conv, self.X_H, self.Y_H = self.gaussian_conv(self.embed_data)
         self.num_frame = self.embed_data.shape[0]
         self.xlim = (-1.1*np.max(self.embed_data), 1.1*np.max(self.embed_data))
         self.ylim = (-1.1*np.max(self.embed_data), 1.1*np.max(self.embed_data))
-        self.update_canvas()
+        self.update_canvas(mode=self.mode)
         pass
-    def update_canvas(self):
+    def update_canvas(self, mode="HDBSCAN Cluster"):
         self.ax.clear()
-        if self.mode == "HDBSCAN Cluster":
+        if mode == "HDBSCAN Cluster":
             self.ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
             self.ax.set_ylim(bottom=self.ylim[0], top=self.ylim[1])
             self.ax.scatter(self.embed_data[:,0], self.embed_data[:,1], s=5, c=self.cluster_colors)
             self.ax.grid(True, 'both')
-        elif self.mode =="Density":
+        elif mode =="Density":
             self.ax.pcolormesh(self.X_H, self.Y_H, self.GH_conv.T, cmap="jet")
             self.ax.grid(True, 'both')
         self.draw()

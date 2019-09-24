@@ -3,19 +3,22 @@ import pandas as pd
 import cv2
 import os
 
+import matplotlib
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 
 from PyQt5.QtWidgets import QWidget
 
 
 class BP_Canvas(FigureCanvas):
     def __init__(self, *args, **kwargs):
-        self.fig = Figure()
+        self.fig = plt.figure()
         super(BP_Canvas, self).__init__(self.fig)
         self.ax = self.fig.add_subplot(111)
+        self.plt = plt
         self.mode = None
         self.data = None
         self.num_frame, self.num_bp, self.num_dim = 0, 30, 3
@@ -52,16 +55,27 @@ class BP_Canvas(FigureCanvas):
             _, framePic = self.cap.read()
         else:
             print(":: Could not recognize mode")
-        
-        # TODO: setup other mode to take out translational and rotational
         self.update_canvas(frame=self.cur_frame)
-        # cap.release()
-        pass
+        return 
     def next_frame(self):
-        if self.cur_frame >= self.num_frame-1:
+        if self.cur_frame+1 >= self.num_frame:
             error=True
         else:
             self.update_canvas(self.cur_frame+1)
+            error=False
+        return error, self.cur_frame
+    def previous_frame(self):
+        if self.cur_frame-1 < 0:
+            error=True
+        else:
+            self.update_canvas(self.cur_frame-1)
+            error=False
+        return error, self.cur_frame
+    def set_frame(self, frame):
+        if frame >= self.num_frame:
+            error=True
+        else:
+            self.update_canvas(frame)
             error=False
         return error, self.cur_frame
     def update_canvas(self, frame=0):
@@ -92,9 +106,9 @@ class BP_Canvas(FigureCanvas):
         marker = 'o'
         s=4
         # plot graph
-        self.ax.margins(0.8)
-        self.ax.get_xaxis().set_visible(False)
-        self.ax.get_yaxis().set_visible(False)
+        self.plt.tight_layout(pad=0.6)
+        self.ax.set_xlim(left=0, right=400)
+        self.ax.set_ylim(bottom=0, top=400)
         self.ax.plot(self.data[0:4,0,frame], self.data[0:4,1,frame], marker=marker, markersize=s)
         self.ax.plot(self.data[4:8,0,frame], self.data[4:8,1,frame], marker=marker, markersize=s)
         self.ax.plot(self.data[8:11,0,frame], self.data[8:11,1,frame], marker=marker, markersize=s)

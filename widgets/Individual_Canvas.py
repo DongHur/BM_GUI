@@ -46,10 +46,24 @@ class Individual_Canvas(FigureCanvas):
         self.draw()
         pass
     def next_frame(self):
-        if self.frame >= self.num_frame:
+        if self.frame+1 >= self.num_frame:
             error=True
         else:
             self.update_canvas(self.frame+1)
+            error=False
+        return error, self.frame
+    def previous_frame(self):
+        if self.frame-1 < 0:
+            error=True
+        else:
+            self.update_canvas(self.frame-1)
+            error=False
+        return error, self.frame
+    def set_frame(self, frame):
+        if frame >= self.num_frame:
+            error=True
+        else:
+            self.update_canvas(frame)
             error=False
         return error, self.frame
 

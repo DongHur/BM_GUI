@@ -13,6 +13,8 @@ class Behaviors_Tab():
         self.setup_connection()
         
     def setup(self):
+        self.parent.Behavior_Table.clearContents()
+        self.parent.Behavior_Table.setRowCount(0)
         (num_row, num_col) = self.parent.beh_df.shape
         for row_idx in range(num_row):
             self.add_row(
@@ -54,27 +56,7 @@ class Behaviors_Tab():
         dir_csv = os.getcwd() + "/behavior.csv"
         filepath = QFileDialog.getSaveFileName(self.parent, "Export Behavior Data", dir_csv ,"CSV(*.csv)")[0]
         if filepath != "":
-            with open(filepath, 'w') as stream:
-                writer = csv.writer(stream)
-                # create header
-                rowdata = []
-                for column in range(self.parent.Behavior_Table.columnCount()):
-                    item = self.parent.Behavior_Table.item(-1, column)
-                    if item is not None:
-                        rowdata.append(item.text())
-                    else:
-                        rowdata.append('')
-                writer.writerow(rowdata)
-                # populate table
-                for row in range(self.parent.Behavior_Table.rowCount()):
-                    rowdata = []
-                    for column in range(self.parent.Behavior_Table.columnCount()):
-                        item = self.parent.Behavior_Table.item(row, column)
-                        if item is not None:
-                            rowdata.append(item.text())
-                        else:
-                            rowdata.append('')
-                    writer.writerow(rowdata)
+            self.parent.beh_df.to_csv(filepath)
         pass
             
                 

@@ -44,7 +44,10 @@ class Data_Tab():
                     {'folder_key':FolderKey, 'num_frames': NumFrames,'folder_path': dirpath}, 
                     ignore_index=True
                 )
+            # update label page
             self.parent.LabelTab.update_widgets()
+            # update label page total plot
+            self.parent.setup_tot_plot()
         else:
             print('FILE DOES NOT EXIST')
     def add_row(self, FolderKey, NumFrames, FolderPath):

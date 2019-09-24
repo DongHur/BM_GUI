@@ -53,8 +53,8 @@ class Preview_Tab():
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
         entry = int(self.parent.Preview_Entry_ComboBox.currentText())
         data = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
-        self.parent.Preview_Start_Frame_LineEdit.setText(data['start_fr'])
-        self.parent.Preview_Stop_Frame_LineEdit.setText(data['stop_fr'])
+        self.parent.Preview_Start_Frame_LineEdit.setValue(int(data['start_fr']))
+        self.parent.Preview_Stop_Frame_LineEdit.setValue(int(data['stop_fr']))
         # update comment
         self.parent.Comment_Label.setText(data['comment'])
     def init_plot(self):
@@ -71,7 +71,7 @@ class Preview_Tab():
         Preview_Ant_Mode = self.parent.Preview_Ant_ComboBox.currentText()
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
         entry = int(self.parent.Preview_Entry_ComboBox.currentText())
-        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.text())
+        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
         # find corresponding file based on above parameter
         label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
         label_key = label_entry['folder_key']
@@ -99,7 +99,7 @@ class Preview_Tab():
         Preview_map_Mode = self.parent.Preview_map_ComboBox.currentText()
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
         entry = int(self.parent.Preview_Entry_ComboBox.currentText())
-        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.text())
+        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
         # find corresponding file based on above parameter
         label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
         label_key = label_entry['folder_key']
@@ -146,7 +146,7 @@ class Preview_Tab():
     def nextFrameSlot(self):
         error_bp, BP_frame = self.BPcanvas.next_frame()
         error_ind, Ind_frame = self.IndDensityCanvas.next_frame()
-        stop_fr = int(self.parent.Preview_Stop_Frame_LineEdit.text())
+        stop_fr = int(self.parent.Preview_Stop_Frame_LineEdit.value())
         if error_bp or error_ind or BP_frame >= stop_fr or Ind_frame >= stop_fr:
             self.restart_frame()
         pass
@@ -154,7 +154,7 @@ class Preview_Tab():
         if self.timer is not None:
             self.timer.stop()
             self.timer = None
-        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.text())
+        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
         # start from new beginning
         self.BPcanvas.update_canvas(frame=start_fr)
         self.IndDensityCanvas.update_canvas(frame=start_fr)
@@ -165,8 +165,8 @@ class Preview_Tab():
         Preview_map_Mode = self.parent.Preview_map_ComboBox.currentText()
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
         entry = int(self.parent.Preview_Entry_ComboBox.currentText())
-        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.text())
-        stop_fr = int(self.parent.Preview_Stop_Frame_LineEdit.text())
+        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
+        stop_fr = int(self.parent.Preview_Stop_Frame_LineEdit.value())
         # find corresponding file based on above parameter
         label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
         label_key = label_entry['folder_key']

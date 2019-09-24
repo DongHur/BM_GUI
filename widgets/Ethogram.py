@@ -42,16 +42,31 @@ class Ethogram(FigureCanvas):
         start = xlim_min if xlim_min >= 0 else 0
         stop = xlim_max if xlim_max <= self.num_frame else self.num_frame 
         self.ax.imshow([self.label_data[start:stop]], cmap=self.cmap, vmin=self.vmin, vmax=self.vmax, extent=(start, stop, 0, 1))
-        self.ax.axvline(x=frame, color='r', linewidth=4)
+        self.ax.axvline(x=frame+0.5, color='r', linewidth=4)
         self.ax.set_xlim(left=xlim_min, right=xlim_max)
         self.ax.get_yaxis().set_visible(False)
+        self.ax.tick_params(axis="x", which="minor", width=10)
         self.draw()
         pass
     def next_frame(self):
-        if self.frame >= self.num_frame:
+        if self.frame+1 >= self.num_frame:
             error=True
         else:
             self.update_canvas(self.frame+1)
+            error=False
+        return error, self.frame
+    def previous_frame(self):
+        if self.frame-1 < 0:
+            error=True
+        else:
+            self.update_canvas(self.frame-1)
+            error=False
+        return error, self.frame
+    def set_frame(self, frame):
+        if frame >= self.num_frame:
+            error=True
+        else:
+            self.update_canvas(frame)
             error=False
         return error, self.frame
 

@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -54,7 +54,13 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
       <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="sortingEnabled">
        <bool>true</bool>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
@@ -175,7 +181,7 @@
        <rect>
         <x>70</x>
         <y>453</y>
-        <width>1181</width>
+        <width>1101</width>
         <height>22</height>
        </rect>
       </property>
@@ -192,6 +198,9 @@
         <height>32</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string comment="opt+space" extracomment="opt+space">opt+space</string>
+      </property>
       <property name="text">
        <string>Play</string>
       </property>
@@ -199,10 +208,10 @@
      <widget class="QLabel" name="Label_Frame_Number_Label">
       <property name="geometry">
        <rect>
-        <x>1300</x>
-        <y>446</y>
+        <x>1290</x>
+        <y>448</y>
         <width>81</width>
-        <height>41</height>
+        <height>29</height>
        </rect>
       </property>
       <property name="text">
@@ -218,10 +227,10 @@
      <widget class="QPushButton" name="Label_Left_Button">
       <property name="geometry">
        <rect>
-        <x>1250</x>
-        <y>450</y>
+        <x>1240</x>
+        <y>448</y>
         <width>51</width>
-        <height>32</height>
+        <height>30</height>
        </rect>
       </property>
       <property name="text">
@@ -232,9 +241,9 @@
       <property name="geometry">
        <rect>
         <x>1380</x>
-        <y>450</y>
+        <y>448</y>
         <width>51</width>
-        <height>32</height>
+        <height>30</height>
        </rect>
       </property>
       <property name="text">
@@ -408,22 +417,6 @@
        <string>-</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="Label_Stop_Frame">
-      <property name="geometry">
-       <rect>
-        <x>630</x>
-        <y>650</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
      <widget class="QLabel" name="Label_Frame_Range_Label">
       <property name="geometry">
        <rect>
@@ -435,22 +428,6 @@
       </property>
       <property name="text">
        <string>Frame Range:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="Label_Start_Frame">
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>650</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
-      </property>
-      <property name="text">
-       <string/>
       </property>
      </widget>
      <widget class="QLabel" name="Label_Comment_Label">
@@ -516,6 +493,66 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
+     <widget class="QSpinBox" name="Label_Start_Frame">
+      <property name="geometry">
+       <rect>
+        <x>490</x>
+        <y>650</y>
+        <width>101</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="maximum">
+       <number>100000000</number>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="Label_Stop_Frame">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>650</y>
+        <width>101</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="maximum">
+       <number>100000000</number>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="speed_spinbox">
+      <property name="geometry">
+       <rect>
+        <x>1186</x>
+        <y>450</y>
+        <width>51</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_4">
      <attribute name="title">
@@ -546,7 +583,13 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
       <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="sortingEnabled">
        <bool>true</bool>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
@@ -694,22 +737,6 @@
       </property>
       <layout class="QHBoxLayout" name="Preview_Ant_Layout"/>
      </widget>
-     <widget class="QLineEdit" name="Preview_Stop_Frame_LineEdit">
-      <property name="geometry">
-       <rect>
-        <x>253</x>
-        <y>571</y>
-        <width>96</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
      <widget class="QComboBox" name="Preview_Behavior_ComboBox">
       <property name="geometry">
        <rect>
@@ -823,22 +850,6 @@
       </property>
       <layout class="QHBoxLayout" name="Preview_tSNE_Layout"/>
      </widget>
-     <widget class="QLineEdit" name="Preview_Start_Frame_LineEdit">
-      <property name="geometry">
-       <rect>
-        <x>133</x>
-        <y>571</y>
-        <width>93</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
      <widget class="QLabel" name="Preview_Comment_Label">
       <property name="geometry">
        <rect>
@@ -868,6 +879,38 @@
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
+     <widget class="QSpinBox" name="Preview_Start_Frame_LineEdit">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>570</y>
+        <width>101</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="maximum">
+       <number>100000000</number>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="Preview_Stop_Frame_LineEdit">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>570</y>
+        <width>101</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="maximum">
+       <number>100000000</number>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -887,7 +930,13 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
    </widget>
+   <widget class="QMenu" name="menutools">
+    <property name="title">
+     <string>tools</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menutools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
@@ -906,6 +955,11 @@
   <action name="actionImport_Data">
    <property name="text">
     <string>Import Data</string>
+   </property>
+  </action>
+  <action name="action_tools_toggle">
+   <property name="text">
+    <string>play/stop (opt+space)</string>
    </property>
   </action>
  </widget>
