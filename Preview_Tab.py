@@ -51,12 +51,14 @@ class Preview_Tab():
     def update_frame_lineEdit(self):
         # update frame limits
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
-        entry = int(self.parent.Preview_Entry_ComboBox.currentText())
-        data = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
-        self.parent.Preview_Start_Frame_LineEdit.setValue(int(data['start_fr']))
-        self.parent.Preview_Stop_Frame_LineEdit.setValue(int(data['stop_fr']))
-        # update comment
-        self.parent.Comment_Label.setText(data['comment'])
+        entry = self.parent.Preview_Entry_ComboBox.currentText()
+        if behavior and entry:
+            entry = int(entry)
+            data = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
+            self.parent.Preview_Start_Frame_LineEdit.setValue(int(data['start_fr']))
+            self.parent.Preview_Stop_Frame_LineEdit.setValue(int(data['stop_fr']))
+            # update comment
+            self.parent.Comment_Label.setText(data['comment'])
     def init_plot(self):
         # append bodypoint
         self.BPcanvas = BP_Canvas()
@@ -67,57 +69,61 @@ class Preview_Tab():
         self.parent.Preview_tSNE_Layout.addWidget(self.IndDensityCanvas)
         self.setup_ind_plot()
     def setup_ant_plot(self):
-        # extract UI data
-        Preview_Ant_Mode = self.parent.Preview_Ant_ComboBox.currentText()
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
-        entry = int(self.parent.Preview_Entry_ComboBox.currentText())
-        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
-        # find corresponding file based on above parameter
-        label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
-        label_key = label_entry['folder_key']
-        main_data = self.parent.main_df[self.parent.main_df["folder_key"]==label_key]
-        label_dir = main_data['folder_path'].iloc[0] 
-        # find video file in dir
-        cur_video_dir = glob.glob(label_dir + "/*.avi")[0]
-        # find DLC file in dir
-        cur_DLC_dir = glob.glob(label_dir + "/*.h5")[0]
-        # populate proper canvas
-        if Preview_Ant_Mode == "Skeleton":
-            self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Skeleton")
-            self.BPcanvas.update_canvas(frame=start_fr)
-        elif Preview_Ant_Mode == "Skeleton + Video":
-            self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Skeleton + Video")
-            self.BPcanvas.update_canvas(frame=start_fr)
-        elif Preview_Ant_Mode == "Video":
-            self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Video")
-            self.BPcanvas.update_canvas(frame=start_fr)
-        else:
-            print(":: No Ant Plot Mode")
+        entry = self.parent.Preview_Entry_ComboBox.currentText()
+        if behavior and entry:
+            # extract UI data
+            Preview_Ant_Mode = self.parent.Preview_Ant_ComboBox.currentText()
+            entry = int(entry)
+            start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
+            # find corresponding file based on above parameter
+            label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
+            label_key = label_entry['folder_key']
+            main_data = self.parent.main_df[self.parent.main_df["folder_key"]==label_key]
+            label_dir = main_data['folder_path'].iloc[0] 
+            # find video file in dir
+            cur_video_dir = glob.glob(label_dir + "/*.avi")[0]
+            # find DLC file in dir
+            cur_DLC_dir = glob.glob(label_dir + "/*.h5")[0]
+            # populate proper canvas
+            if Preview_Ant_Mode == "Skeleton":
+                self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Skeleton")
+                self.BPcanvas.update_canvas(frame=start_fr)
+            elif Preview_Ant_Mode == "Skeleton + Video":
+                self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Skeleton + Video")
+                self.BPcanvas.update_canvas(frame=start_fr)
+            elif Preview_Ant_Mode == "Video":
+                self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Video")
+                self.BPcanvas.update_canvas(frame=start_fr)
+            else:
+                print(":: No Ant Plot Mode")
         pass
     def setup_ind_plot(self):
-        # extract UI data
-        Preview_map_Mode = self.parent.Preview_map_ComboBox.currentText()
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
-        entry = int(self.parent.Preview_Entry_ComboBox.currentText())
-        start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
-        # find corresponding file based on above parameter
-        label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
-        label_key = label_entry['folder_key']
-        main_data = self.parent.main_df[self.parent.main_df["folder_key"]==label_key]
-        label_dir = main_data['folder_path'].iloc[0] 
-        # find embed file in dir
-        cur_embed_dir = glob.glob(label_dir + "/EMBED.mat")[0]
-        # find cluster file in dir
-        cluster_dir = glob.glob(label_dir + "/cluster.npy")[0]
-        # populate proper figure
-        if Preview_map_Mode == "Points (HDBSCAN)":
-            self.IndDensityCanvas.setup_canvas(
-                embed = cur_embed_dir, 
-                cluster = cluster_dir, 
-                mode = "Points (HDBSCAN)")
-            self.IndDensityCanvas.update_canvas(frame=start_fr)
-        else:
-            print(":: No Individual Plot Mode")
+        entry = self.parent.Preview_Entry_ComboBox.currentText()
+        if behavior and entry:
+            # extract UI data
+            Preview_map_Mode = self.parent.Preview_map_ComboBox.currentText()
+            entry = int(entry)
+            start_fr = int(self.parent.Preview_Start_Frame_LineEdit.value())
+            # find corresponding file based on above parameter
+            label_entry = self.parent.beh_df[self.parent.beh_df['behavior']==behavior].iloc[entry]
+            label_key = label_entry['folder_key']
+            main_data = self.parent.main_df[self.parent.main_df["folder_key"]==label_key]
+            label_dir = main_data['folder_path'].iloc[0] 
+            # find embed file in dir
+            cur_embed_dir = glob.glob(label_dir + "/EMBED.mat")[0]
+            # find cluster file in dir
+            cluster_dir = glob.glob(label_dir + "/cluster.npy")[0]
+            # populate proper figure
+            if Preview_map_Mode == "Points (HDBSCAN)":
+                self.IndDensityCanvas.setup_canvas(
+                    embed = cur_embed_dir, 
+                    cluster = cluster_dir, 
+                    mode = "Points (HDBSCAN)")
+                self.IndDensityCanvas.update_canvas(frame=start_fr)
+            else:
+                print(":: No Individual Plot Mode")
         pass
     def behavior_change(self):
         self.update_entry_dropdown()

@@ -159,7 +159,7 @@ class Label_Tab():
         error_ind, _ = self.IndDensityCanvas.previous_frame()
         self.parent.Label_Frame_Number_Label.setText("{}/{}".format(frame,self.EthogramCanvas.num_frame-1))
         self.parent.Label_HSlider.setValue(frame)
-        if error_ethogram or error_bp or error_ind:
+        if self.timer!=None and (error_ethogram or error_bp or error_ind):
             self.timer.stop()
             self.timer = None
         pass
@@ -169,7 +169,7 @@ class Label_Tab():
         error_ind, _ = self.IndDensityCanvas.next_frame()
         self.parent.Label_Frame_Number_Label.setText("{}/{}".format(frame,self.EthogramCanvas.num_frame-1))
         self.parent.Label_HSlider.setValue(frame)
-        if error_ethogram or error_bp or error_ind:
+        if self.timer!=None and (error_ethogram or error_bp or error_ind):
             self.timer.stop()
             self.timer = None
         pass

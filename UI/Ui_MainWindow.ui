@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -729,9 +729,9 @@
      <widget class="QWidget" name="horizontalLayoutWidget_6">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>80</x>
         <y>20</y>
-        <width>491</width>
+        <width>511</width>
         <height>411</height>
        </rect>
       </property>
@@ -802,7 +802,7 @@
      <widget class="QComboBox" name="Preview_Ant_ComboBox">
       <property name="geometry">
        <rect>
-        <x>373</x>
+        <x>380</x>
         <y>440</y>
         <width>211</width>
         <height>26</height>
@@ -827,7 +827,7 @@
      <widget class="QComboBox" name="Preview_map_ComboBox">
       <property name="geometry">
        <rect>
-        <x>1123</x>
+        <x>1150</x>
         <y>440</y>
         <width>211</width>
         <height>26</height>
@@ -844,7 +844,7 @@
        <rect>
         <x>840</x>
         <y>20</y>
-        <width>491</width>
+        <width>521</width>
         <height>411</height>
        </rect>
       </property>

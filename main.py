@@ -88,7 +88,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         pass
     def setup_tot_plot(self):
         tot_dir = self.main_df['folder_path'].to_numpy()
-        self.TotDensityCanvas.setup_canvas(tot_dir=tot_dir)
+        if len(tot_dir)!=0:
+            self.TotDensityCanvas.setup_canvas(tot_dir=tot_dir)
         pass
     def update_behavior_tabs(self):
         self.BehaviorsTab.setup()

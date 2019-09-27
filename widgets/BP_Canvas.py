@@ -118,6 +118,7 @@ class BP_Canvas(FigureCanvas):
         self.ax.plot(self.data[21:24,0,frame], self.data[21:24,1,frame], marker=marker, markersize=s)
         self.ax.plot(self.data[24:27,0,frame], self.data[24:27,1,frame], marker=marker, markersize=s)
         self.ax.plot(self.data[27:30,0,frame], self.data[27:30,1,frame], marker=marker, markersize=s)
+        self.ax.set_aspect('equal')
         pass
 
 
