@@ -36,7 +36,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -485,7 +485,7 @@
        <rect>
         <x>17</x>
         <y>600</y>
-        <width>1411</width>
+        <width>1281</width>
         <height>20</height>
        </rect>
       </property>
@@ -553,6 +553,45 @@
        <double>1.000000000000000</double>
       </property>
      </widget>
+     <widget class="QLabel" name="Cluster_idx_Label">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>620</y>
+        <width>81</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Cluster Idx:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Cluster_idx_value">
+      <property name="geometry">
+       <rect>
+        <x>810</x>
+        <y>620</y>
+        <width>201</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="Export_Ethogram_Button">
+      <property name="geometry">
+       <rect>
+        <x>1300</x>
+        <y>600</y>
+        <width>131</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Export Ethogram</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_4">
      <attribute name="title">
@@ -601,6 +640,20 @@
       <column>
        <property name="text">
         <string>Folder Key</string>
+       </property>
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Cluster ID</string>
        </property>
        <property name="font">
         <font>
@@ -674,12 +727,12 @@
        <rect>
         <x>140</x>
         <y>10</y>
-        <width>113</width>
+        <width>121</width>
         <height>32</height>
        </rect>
       </property>
       <property name="text">
-       <string>Export</string>
+       <string>Export Table</string>
       </property>
      </widget>
     </widget>

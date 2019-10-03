@@ -1,11 +1,13 @@
 import numpy as np 
 import glob
+import os
+import pandas as pd
 
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtCore import QTimer
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtWidgets import QShortcut, QMessageBox
+from PyQt5.QtWidgets import QShortcut, QMessageBox, QFileDialog
 
 
 from widgets.BP_Canvas import BP_Canvas
@@ -49,6 +51,7 @@ class Label_Tab():
         self.parent.Label_Enter_Button.clicked.connect(self.add_behavior)
         self.parent.Label_Left_Button.clicked.connect(self.left_button_clicked)
         self.parent.Label_Right_Button.clicked.connect(self.right_button_clicked)
+        self.parent.Export_Ethogram_Button.clicked.connect(self.export_ethogram)
         # setup slider
         self.parent.Label_HSlider.sliderMoved.connect(self.setFrame)
         self.parent.speed_spinbox.valueChanged.connect(self.setSpeed)
@@ -93,7 +96,8 @@ class Label_Tab():
         # populate plot
         self.setup_ant_plot()
         self.update_ind_plot()
-        self.EthogramCanvas.setup_canvas(self.cluster_dir)
+        cluster_id = self.EthogramCanvas.setup_canvas(self.cluster_dir)
+        self.parent.Cluster_idx_value.setText(str(cluster_id))
         # update slider
         self.parent.Label_HSlider.setMinimum(0)
         self.parent.Label_HSlider.setMaximum(self.EthogramCanvas.num_frame-1)
@@ -154,21 +158,24 @@ class Label_Tab():
             self.parent.repaint()
         pass
     def previousFrameSlot(self):
-        error_ethogram, frame = self.EthogramCanvas.previous_frame()
+        error_ethogram, frame, cluster_id = self.EthogramCanvas.previous_frame()
         error_bp, _ = self.BPcanvas.previous_frame()
         error_ind, _ = self.IndDensityCanvas.previous_frame()
         self.parent.Label_Frame_Number_Label.setText("{}/{}".format(frame,self.EthogramCanvas.num_frame-1))
         self.parent.Label_HSlider.setValue(frame)
+        self.parent.Cluster_idx_value.setText(str(cluster_id))
         if self.timer!=None and (error_ethogram or error_bp or error_ind):
             self.timer.stop()
             self.timer = None
         pass
     def nextFrameSlot(self):
-        error_ethogram, frame = self.EthogramCanvas.next_frame()
+        # update GUI with next frame
+        error_ethogram, frame, cluster_id  = self.EthogramCanvas.next_frame()
         error_bp, _ = self.BPcanvas.next_frame()
         error_ind, _ = self.IndDensityCanvas.next_frame()
         self.parent.Label_Frame_Number_Label.setText("{}/{}".format(frame,self.EthogramCanvas.num_frame-1))
         self.parent.Label_HSlider.setValue(frame)
+        self.parent.Cluster_idx_value.setText(str(cluster_id))
         if self.timer!=None and (error_ethogram or error_bp or error_ind):
             self.timer.stop()
             self.timer = None
@@ -182,10 +189,11 @@ class Label_Tab():
             if self.timer != None:
                 self.timer.stop()
                 self.timer = None
-            error_eth, _ = self.EthogramCanvas.set_frame(frame)
+            error_eth, _, cluster_id = self.EthogramCanvas.set_frame(frame)
             error_bp, _ = self.BPcanvas.set_frame(frame)
             error_ind, _ = self.IndDensityCanvas.set_frame(frame)
             self.parent.Label_Frame_Number_Label.setText("{}/{}".format(frame,self.EthogramCanvas.num_frame-1))
+            self.parent.Cluster_idx_value.setText(str(cluster_id))
         pass
     def setSpeed(self, speed):
         if self.timer != None:
@@ -212,6 +220,7 @@ class Label_Tab():
         if self.cur_folder_key is None or folder_key == "":
             choice = QMessageBox.warning(None,"warning", "Select a file you would like to use")
         else:
+            cluster_id = self.parent.Cluster_idx_value.text()
             start_fr = self.parent.Label_Start_Frame.value()
             stop_fr = self.parent.Label_Stop_Frame.value()
             comment = self.parent.Label_Comment_TextEdit.toPlainText()
@@ -221,8 +230,10 @@ class Label_Tab():
             self.parent.Label_Comment_TextEdit.setPlainText("")
             self.parent.Label_Comment_TextEdit.repaint()
             # store in dataframe
+            print("LOOK HERE: ", int(cluster_id))
             self.parent.beh_df = self.parent.beh_df.append({
-                'folder_key': folder_key, 
+                'folder_key': folder_key,
+                'cluster_id': int(cluster_id),
                 'behavior': behavior, 
                 'start_fr': start_fr, 
                 'stop_fr': stop_fr, 
@@ -231,7 +242,24 @@ class Label_Tab():
             # update other tabs
             self.parent.update_behavior_tabs()
         pass
-
+    def export_ethogram(self):
+        dir_csv = os.getcwd() + "/ethogram.csv"
+        filepath = QFileDialog.getSaveFileName(self.parent, "Export Ethogram Data", dir_csv ,"CSV(*.csv)")[0]
+        if filepath != "":
+            (num_bp, num_dim, num_fr) = self.BPcanvas.data.shape
+            # etogram data
+            df_etho = pd.DataFrame(self.EthogramCanvas.label_data)
+            df_etho.columns = ["ethogram"]
+            # bp data
+            df_bp = pd.DataFrame(self.BPcanvas.data.reshape(num_bp*num_dim, num_fr).T)
+            bp_header = []
+            for bp in range(num_bp):
+                bp_header.extend(["bp "+str(bp)+" x", "bp "+str(bp)+" y", "bp "+str(bp)+" prob"])
+            df_bp.columns = bp_header
+            # combined data
+            df_comb = pd.concat([df_etho, df_bp], axis=1)
+            df_comb.to_csv(filepath, index=False)
+        pass
 
 
 

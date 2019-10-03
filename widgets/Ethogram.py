@@ -21,12 +21,14 @@ class Ethogram(FigureCanvas):
         plt.tight_layout(pad=-1)
         self.label_data = None # num_cluster (n)
         self.frame = 0
-        self.vmin, self.vmax = 0,0
+        self.vmin, self.vmax = 0, 0
         self.num_frame = None
+        self.start_idx = 0
     def setup_canvas(self, cluster_dir):
         self.label_data = np.load(cluster_dir)
         self.num_frame = self.label_data.shape[0]
         self.vmin, self.vmax = np.min(self.label_data), np.max(self.label_data)
+        self.start_idx = 0
         # format cluster color
         num_cluster = np.max(self.label_data)+1
         color_palette = sns.color_palette('hls', num_cluster)
@@ -34,7 +36,7 @@ class Ethogram(FigureCanvas):
         self.color_palette = np.insert(color_palette, 0, (0.5, 0.5, 0.5), axis=0)
         self.cmap = ListedColormap(self.color_palette)
         self.update_canvas()
-        pass
+        return self.label_data[0]
     def update_canvas(self, frame=0):
         self.frame = frame
         self.ax.clear()
@@ -49,26 +51,33 @@ class Ethogram(FigureCanvas):
         self.draw()
         pass
     def next_frame(self):
+        # check if next frame exist
         if self.frame+1 >= self.num_frame:
             error=True
+            cluster_id = self.label_data[self.frame]
+            return error, self.frame, cluster_id
         else:
-            self.update_canvas(self.frame+1)
             error=False
-        return error, self.frame
+            cluster_id = self.label_data[self.frame+1]
+            self.update_canvas(self.frame+1)
+            return error, self.frame, cluster_id
     def previous_frame(self):
         if self.frame-1 < 0:
             error=True
+            cluster_id = self.label_data[self.frame]
+            return error, self.frame, cluster_id
         else:
+            cluster_id = self.label_data[self.frame-1]
             self.update_canvas(self.frame-1)
             error=False
-        return error, self.frame
+            return error, self.frame, cluster_id
     def set_frame(self, frame):
         if frame >= self.num_frame:
             error=True
         else:
             self.update_canvas(frame)
             error=False
-        return error, self.frame
+        return error, self.frame, self.label_data[frame]
 
 
 

@@ -19,6 +19,7 @@ class Behaviors_Tab():
         for row_idx in range(num_row):
             self.add_row(
                 FolderKey=self.parent.beh_df.loc[row_idx, 'folder_key'],
+                Cluster_id=self.parent.beh_df.loc[row_idx, 'cluster_id'],
                 Behavior=self.parent.beh_df.loc[row_idx, 'behavior'], 
                 Fr_Start=self.parent.beh_df.loc[row_idx, 'start_fr'], 
                 Fr_Stop=self.parent.beh_df.loc[row_idx, 'stop_fr'], 
@@ -29,15 +30,16 @@ class Behaviors_Tab():
         self.parent.Delete_Beh_Data_Button.clicked.connect(self.delete_row)
         self.parent.Beh_Export_Button.clicked.connect(self.export_data)
         pass
-    def add_row(self, FolderKey, Behavior, Fr_Start, Fr_Stop, Comment):
+    def add_row(self, FolderKey, Cluster_id, Behavior, Fr_Start, Fr_Stop, Comment):
         # DataKey - string; NumFrames - int; FolderPath - string
         row_idx = self.parent.Behavior_Table.rowCount()
         self.parent.Behavior_Table.insertRow(row_idx)
         self.parent.Behavior_Table.setItem(row_idx, 0, QTableWidgetItem(FolderKey))
-        self.parent.Behavior_Table.setItem(row_idx, 1, QTableWidgetItem(Behavior))
-        self.parent.Behavior_Table.setItem(row_idx, 2, QTableWidgetItem(str(Fr_Start)))
-        self.parent.Behavior_Table.setItem(row_idx, 3, QTableWidgetItem(str(Fr_Stop)))
-        self.parent.Behavior_Table.setItem(row_idx, 4, QTableWidgetItem(Comment))
+        self.parent.Behavior_Table.setItem(row_idx, 1, QTableWidgetItem(str(Cluster_id)))
+        self.parent.Behavior_Table.setItem(row_idx, 2, QTableWidgetItem(Behavior))
+        self.parent.Behavior_Table.setItem(row_idx, 3, QTableWidgetItem(str(Fr_Start)))
+        self.parent.Behavior_Table.setItem(row_idx, 4, QTableWidgetItem(str(Fr_Stop)))
+        self.parent.Behavior_Table.setItem(row_idx, 5, QTableWidgetItem(Comment))
         pass
     def delete_row(self):
         # verify if user wants to delete
