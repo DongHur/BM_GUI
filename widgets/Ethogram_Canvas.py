@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QWidget
 
 
-class Ethogram(FigureCanvas):
+class Ethogram_Canvas(FigureCanvas):
     def __init__(self, *args, **kwargs):
         self.fig = plt.figure()
         super(FigureCanvas, self).__init__(self.fig)
