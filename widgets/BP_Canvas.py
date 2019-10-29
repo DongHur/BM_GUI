@@ -24,6 +24,8 @@ class BP_Canvas(FigureCanvas):
         self.num_frame, self.num_bp, self.num_dim = 0, 30, 3
         self.perc = 0
         self.cur_frame = 0
+        self.vid_width, self.vid_height = 0,0
+        self.fig_width, self.fig_height = None, None
     def setup_canvas(self, video_dir, DLC_dir, mode="Skeleton"):
         self.mode = mode
         if mode == "Skeleton":
@@ -55,6 +57,12 @@ class BP_Canvas(FigureCanvas):
             _, framePic = self.cap.read()
         else:
             print(":: Could not recognize mode")
+        # determine size of figure
+        cap = cv2.VideoCapture(video_dir)
+        self.vid_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)   # float
+        self.vid_height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) # float
+        self.fig_width = [self.data[:,0,:].min()-20, self.data[:,0,:].max()+20]
+        self.fig_height = [self.data[:,1,:].min()-20, self.data[:,1,:].max()+20]
         self.update_canvas(frame=self.cur_frame)
         return 
     def next_frame(self):
@@ -102,6 +110,24 @@ class BP_Canvas(FigureCanvas):
         self.draw()
         pass
     def plot_bpgraph(self, frame=0):
+        # self.fig.clear()
+        marker = 'o'
+        s=12
+        
+        # plot graph
+        self.plt.tight_layout(pad=0.6)
+        self.ax.set_xlim(left=self.fig_width[0], right=self.fig_width[1])
+        self.ax.set_ylim(bottom=self.fig_height[0], top=self.fig_height[1])
+        self.ax.scatter(
+            self.data[:,0,frame], self.data[:,1,frame], 
+            marker=marker,
+            c=np.arange(self.num_bp), 
+            cmap= "tab20",
+            s=s)
+        self.ax.set_aspect('equal')
+        pass
+    # plot for ant
+    def plot_ant_bpgraph(self, frame=0):
         # self.fig.clear()
         marker = 'o'
         s=4

@@ -1,8 +1,3 @@
-data/*
-widgets/__pycache__/*
-.ipynb_checkpoints
-__pycache__
-test/*
-*.db
 virtual_env_BMGUI/*
+**/__pycache__/**
 *.h5

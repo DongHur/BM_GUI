@@ -1,125 +1,92 @@
 import numpy as np
-import sqlite3
-import sys
-import os
 import pandas as pd
-import atexit
-
-from PyQt5.QtCore import QTimer, QDir, QUrl
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QShortcut, QMessageBox
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtMultimediaWidgets import QVideoWidget
-
+import sys, os, atexit
 from UI.Ui_MainWindow import Ui_MainWindow
 
-from widgets.tsne_Graph import tsne_Graph
-from widgets.Behavior_Table import Behavior_Table
-from widgets.Total_Canvas import Total_Canvas
+#import pyqt tools
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut, QMessageBox,QFileDialog
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-
-from Data_Tab import Data_Tab
-from Label_Tab import Label_Tab
-from Behaviors_Tab import Behaviors_Tab
-from Preview_Tab import Preview_Tab
+# import tab pages
+from Tab.Data_Tab import Data_Tab
+from Tab.Label_Tab import Label_Tab
+from Tab.Behaviors_Tab import Behaviors_Tab
+from Tab.Preview_Tab import Preview_Tab
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__()
-        self.BM_Main_Path = None
         self.Main_Store = None
         self.main_df = None
-        self.BM_Behavior_Path = None
-        self.Behavior_Store = None
         self.setupUi(self)
-        self.setup_data()
-        self.setup_tab()
         self.setup_connection()
         self.setup_shortcut()
         self.show()
-    def setup_data(self):
-        # Parse Main Data
-        self.BM_Main_Path = os.getcwd()+"/BM_MAIN_DATA.h5"
-        self.Main_Store = pd.HDFStore(self.BM_Main_Path)
-        if '/main' in self.Main_Store.keys():
-            # load main frame if it exist
-            self.main_df = self.Main_Store['main']
-            print(self.main_df)
-        else:
-            # create main frame if it doesn't exist
-            self.main_df = pd.DataFrame(columns=['folder_key', 'num_frames', 'folder_path'])
-            self.Main_Store.put(key='main', value=self.main_df)
-        # get behavior table
-        if '/behavior' in self.Main_Store.keys():
-            self.beh_df = self.Main_Store['behavior']
-            print(self.beh_df)
-        else:
-            self.beh_df = pd.DataFrame(
-                columns=['folder_key', 'behavior', 'start_fr', 'stop_fr', 'comment'])
-            self.Main_Store.put(key='behavior', value=self.beh_df)
-        # get behaivor key table
-        if '/behavior_key' in self.Main_Store.keys():
-            # load behavior frame if it exist
-            self.beh_key_df = self.Main_Store['behavior_key']
-            print(self.beh_key_df)
-        else:
-            # create behavior frame if it doesn't exist
-            self.beh_key_df = pd.DataFrame(columns=['behavior'])
-            self.Main_Store.put(key='behavior_key', value=self.beh_key_df)
-        print(":: finished updating database")
-        # append total density plot
-        self.TotDensityCanvas = Total_Canvas()
-        self.Label_Population_Layout.addWidget(self.TotDensityCanvas)
-        self.setup_tot_plot()
-        pass
-    def setup_tab(self):
-        self.DataTab = Data_Tab(self)
-        self.LabelTab = Label_Tab(self)
-        self.BehaviorsTab = Behaviors_Tab(self)
-        self.PreviewTab = Preview_Tab(self)
-        pass
+    
+    # ***** exec function *****
     def setup_connection(self):
-        self.actionSave.triggered.connect(self.save_app)
-        self.Label_Population_ComboBox.activated.connect(self.update_tot_plot)
+        self.actionNew.triggered.connect(self._new_app)
+        self.actionSave.triggered.connect(self._save_app)
+        self.actionOpen.triggered.connect(self._open_app)
         pass
     def setup_shortcut(self):
-        self.shortcut = QShortcut(QKeySequence("Ctrl+S"), self.centralwidget, self.save_app)
+        self.shortcut = QShortcut(QKeySequence("Ctrl+S"), self.centralwidget, self._save_app)
         pass
-    def setup_tot_plot(self):
-        tot_dir = self.main_df['folder_path'].to_numpy()
-        if len(tot_dir)!=0:
-            self.TotDensityCanvas.setup_canvas(tot_dir=tot_dir)
-        pass
-    def update_behavior_tabs(self):
-        self.BehaviorsTab.setup()
-        self.PreviewTab.update_widgets()
-        pass
-    def update_tot_plot(self):
-        Label_Population_Mode = self.Label_Population_ComboBox.currentText()
-        if Label_Population_Mode == "HDBSCAN Cluster":
-            self.TotDensityCanvas.update_canvas(mode="HDBSCAN Cluster")
-        elif Label_Population_Mode == "Density":
-            self.TotDensityCanvas.update_canvas(mode="Density")
+    
+    # ***** helper function *****    
+    def _new_app(self):
+        data_path = QFileDialog.getSaveFileName(None, "New Data", os.getcwd()+"/BM.h5" ,"h5(BM.h5)")[0]
+        if data_path != "":
+            print(data_path)
+            self.Main_Store = pd.HDFStore(data_path)
+            # create main frame
+            self.main_df = pd.DataFrame(columns=['folder_key', 'num_frames', 'folder_path'])
+            self.Main_Store.put(key='main', value=self.main_df)
+            # create behavior frame
+            self.beh_df = pd.DataFrame(columns=['folder_key', 'behavior', 'start_fr', 'stop_fr', 'comment'])
+            self.Main_Store.put(key='behavior', value=self.beh_df)
+            # create behavior key frame
+            self.beh_key_df = pd.DataFrame(columns=['behavior'])
+            self.Main_Store.put(key='behavior_key', value=self.beh_key_df)
+            # setup tab pages
+            self.DataTab = Data_Tab(self)
+            self.LabelTab = Label_Tab(self)
+            self.BehaviorsTab = Behaviors_Tab(self)
+            # self.PreviewTab = Preview_Tab(self)
+            # save new app
+            self._save_app()
         else:
-            print(":: No Total tSNE Plot Mode")
-        pass
-    def save_app(self):
-        # save app data
-        print(":: SAVING ALL DATA")
-        print(self.main_df)
-        print(self.beh_df)
-        print(self.beh_key_df)
-        self.Main_Store.put(key='main', value=self.main_df)
-        self.Main_Store.put(key='behavior', value=self.beh_df)
-        self.Main_Store.put(key='behavior_key', value=self.beh_key_df)
+            QMessageBox.warning(None,"warning","Select a valid 'BM.h5' file")
+    def _save_app(self):
+        if self.Main_Store != None:
+            print(":: SAVING ALL DATA", self.main_df, self.beh_df, self.beh_key_df)
+            self.Main_Store.put(key='main', value=self.main_df)
+            self.Main_Store.put(key='behavior', value=self.beh_df)
+            self.Main_Store.put(key='behavior_key', value=self.beh_key_df)
+        else:
+            QMessageBox.warning(None,"warning","Could not save the files")
+    def _open_app(self):
+        data_path = QFileDialog.getOpenFileName(None, "Select BM.h5", os.getcwd(), 
+            "h5 files (BM.h5)")[0]
+        if data_path:
+            self.Main_Store = pd.HDFStore(data_path)
+            self.main_df = self.Main_Store['main'] # get main table
+            self.beh_df = self.Main_Store['behavior'] # get behavior table
+            self.beh_key_df = self.Main_Store['behavior_key'] # get behaivor key table
+            # setup tab pages
+            self.DataTab = Data_Tab(self)
+            self.LabelTab = Label_Tab(self)
+            self.BehaviorsTab = Behaviors_Tab(self)
+            # self.PreviewTab = Preview_Tab(self)
+        else:
+            QMessageBox.warning(None,"warning","Select a valid 'BM.h5' file")
 
 def close():
-    # verify if user wants to delete
+    # verify to save unsaved work
     choice = QMessageBox.question(None, 'Save Data?',"Do you want to save your work?",
         QMessageBox.Yes | QMessageBox.No)
     if choice == QMessageBox.Yes:
-        mainWin.save_app()
+        mainWin._save_app()
     pass
 if __name__ == "__main__":
     app = QApplication(sys.argv)

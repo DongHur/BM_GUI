@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1440</width>
-    <height>803</height>
+    <height>808</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -18,6 +18,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="Main_Tab">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -36,13 +39,16 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
       <string>Data</string>
      </attribute>
      <widget class="QTableWidget" name="Data_Table">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -113,6 +119,9 @@
       </column>
      </widget>
      <widget class="QPushButton" name="Data_Import_Button">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -592,10 +601,36 @@
        <string>Export Ethogram</string>
       </property>
      </widget>
+     <widget class="QProgressBar" name="LabelProgressBar">
+      <property name="geometry">
+       <rect>
+        <x>1297</x>
+        <y>700</y>
+        <width>131</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="value">
+       <number>100</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="LabelLoadTotPlot">
+      <property name="geometry">
+       <rect>
+        <x>955</x>
+        <y>405</y>
+        <width>113</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_4">
      <attribute name="title">
-      <string>Behaviors</string>
+      <string>Behavior</string>
      </attribute>
      <widget class="QPushButton" name="Delete_Beh_Data_Button">
       <property name="geometry">
@@ -980,16 +1015,11 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
-    <addaction name="actionSave_as"/>
-   </widget>
-   <widget class="QMenu" name="menutools">
-    <property name="title">
-     <string>tools</string>
-    </property>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menutools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
@@ -1013,6 +1043,38 @@
   <action name="action_tools_toggle">
    <property name="text">
     <string>play/stop (opt+space)</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="autoRepeat">
+    <bool>true</bool>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionNew_2">
+   <property name="text">
+    <string>Test</string>
+   </property>
+  </action>
+  <action name="actionhm">
+   <property name="text">
+    <string>hm</string>
    </property>
   </action>
  </widget>
