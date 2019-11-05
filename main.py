@@ -66,8 +66,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             QMessageBox.warning(None,"warning","Could not save the files")
     def _open_app(self):
-        data_path = QFileDialog.getOpenFileName(None, "Select BM.h5", os.getcwd(), 
-            "h5 files (BM.h5)")[0]
+        data_path = QFileDialog.getOpenFileName(None, "Select BM.h5", os.getcwd(), "h5 files (BM.h5)")[0]
         if data_path:
             self.Main_Store = pd.HDFStore(data_path)
             self.main_df = self.Main_Store['main'] # get main table

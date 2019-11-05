@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.io as sio
 import seaborn as sns
-from sklearn.neighbors import NearestNeighbors
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
@@ -9,94 +8,55 @@ from matplotlib.figure import Figure
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.ticker
 
+from tools.GaussConv import GaussConv
+from tools.gmm import gmm
+
 class Tot_Canvas(FigureCanvas):
     def __init__(self, *args, **kwargs):
         self.fig = Figure()
         super(FigureCanvas, self).__init__(self.fig)
         self.ax = self.fig.add_subplot(111)
-        self.embed_data = None
-        self.label_data = None
+        self.embed = None
+        self.label = None
         self.mode = ""
         self.xlim, self.ylim = (-100, 100), (-100, 100)
-        self.cluster_colors = None
+        self.color = None
         self.X_H, self.Y_H, self.GH_conv = None, None, None
-    def setup_canvas(self, tot_dir):
-        self.mode = "HDBSCAN Cluster"
+    
+    def setup_canvas(self, tot_dir, mode):
+        self.mode = mode
         # combine all data
         for directory in tot_dir:
             # combine embed data
             data_i= sio.loadmat(directory+"/EMBED.mat")['embed_values_i']
-            self.embed_data = np.vstack((self.embed_data, data_i)) if self.embed_data is not None else data_i
-            # combine cluster laber data
-            label_i = np.load(directory+"/cluster.npy")
-            self.label_data = np.hstack((self.label_data, label_i)) if self.label_data is not None else label_i
-        # combine cluster color data
-        num_cluster = np.max(self.label_data)+1
-        color_palette = sns.color_palette('hls', num_cluster)
-        self.cluster_colors = [color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in self.label_data]
-        # compute density data
-        self.GH_conv, self.X_H, self.Y_H = self.gaussian_conv(self.embed_data)
-        self.num_frame = self.embed_data.shape[0]
-        self.xlim = (-1.1*np.max(self.embed_data), 1.1*np.max(self.embed_data))
-        self.ylim = (-1.1*np.max(self.embed_data), 1.1*np.max(self.embed_data))
-        self.update_canvas(mode=self.mode)
-        pass
-    def update_canvas(self, mode="HDBSCAN Cluster"):
+            self.embed = np.vstack((self.embed, data_i)) if self.embed is not None else data_i
+        # set canvas size
+        self.num_frame = self.embed.shape[0]
+        self.xlim = (-1.1*np.max(self.embed), 1.1*np.max(self.embed))
+        self.ylim = (-1.1*np.max(self.embed), 1.1*np.max(self.embed))
+        # update/init canvas
+        self.update_canvas()
+    
+    def update_canvas(self):
         self.ax.clear()
-        if mode == "HDBSCAN Cluster":
+        if self.mode=="HDBSCAN Cluster":
+            # copute clustering 
+            self.label, self.prob = gmm(self.embed)
+            # format cluster color
+            num_cluster = np.max(self.label)+1
+            color_palette = sns.color_palette('hls', num_cluster)
+            self.color = [color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in self.label]
+            # create graph
             self.ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
             self.ax.set_ylim(bottom=self.ylim[0], top=self.ylim[1])
-            self.ax.scatter(self.embed_data[:,0], self.embed_data[:,1], s=5, c=self.cluster_colors)
+            self.ax.scatter(self.embed[:,0], self.embed[:,1], s=5, c=self.color)
             self.ax.grid(True, 'both')
-        elif mode =="Density":
+        elif self.mode=="Density":
+            # compute Gaussin Conv
+            self.GH_conv, self.X_H, self.Y_H = GaussConv(data=self.embed)
+            # create graph
             self.ax.pcolormesh(self.X_H, self.Y_H, self.GH_conv.T, cmap="jet")
             self.ax.grid(True, 'both')
         self.draw()
-        pass
 
-    def gaussian_conv(self, data, k_nearest=5, num_points=120, plot_kernel=False, plot_hist=False, plot_conv=False):
-        # data - [num_frames, num_dim]
-        # knn computation
-        nbrs = NearestNeighbors(n_neighbors=k_nearest+1, algorithm='kd_tree').fit(data)
-        K_dist, K_idx = nbrs.kneighbors(data)
-        K_matrix_idx = nbrs.kneighbors_graph(data).toarray()
-        # gaussian conv computation
-        sigma = np.median(K_dist[:,-1])
-        print("sigma: ", sigma)
-        L_bound = -1.0*abs(data.max())-1
-        U_bound = 1.0*abs(data.max())+1
-        xx = np.linspace(L_bound, U_bound, num_points)
-        yy = np.linspace(L_bound, U_bound, num_points)
-        XX, YY = np.meshgrid(xx, yy)
-        # gaussian kernel
-        G = np.exp(-0.5*(XX**2 + YY**2)/sigma**2)/(2*np.pi*sigma**2);
-        if plot_kernel:
-            plt.figure("Gaussian Kernel")
-            plt.imshow(G, extent=[L_bound, U_bound, L_bound, U_bound])
-            plt.title("Gaussian Kernel")
-            plt.xlabel("X1")
-            plt.ylabel("X2")
-        # data histogram
-        H, xedges, yedges = np.histogram2d(data[:,0], data[:,1], num_points, [[L_bound,U_bound],[L_bound,U_bound]])
-        X_H, Y_H = np.meshgrid(xedges, yedges)
-        H = H/H.sum()
-        if plot_hist:
-            plt.figure("Data Histogram")
-            plt.pcolormesh(X_H, Y_H, H.T)
-            # plt.imshow(H, extent=[L_bound, U_bound, L_bound, U_bound]) 
-            plt.title("Data Histogram")
-            plt.xlabel("X1")
-            plt.ylabel("X2")
-        # fft convolution
-        fr = np.fft.fft2(G)
-        fr2 = np.fft.fft2(H)
-        GH_conv = np.fft.fftshift(np.real(np.fft.ifft2(fr*fr2)))
-        GH_conv[GH_conv<0] = 0
-        if plot_conv:
-            plt.figure("Gaussian Convolution")
-            plt.pcolormesh(X_H, Y_H, GH_conv.T)
-            # plt.imshow(GH_conv, extent=[L_bound, U_bound, L_bound, U_bound])
-            plt.title("Gaussian Kernel Convolution w/ Data Histogram")
-            plt.xlabel("X1")
-            plt.ylabel("X2")
-        return GH_conv, X_H, Y_H
+    
