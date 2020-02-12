@@ -43,7 +43,7 @@ class Data_Tab():
                     {'folder_key':FolderKey, 'num_frames': NumFrames,'folder_path': dirpath}, 
                     ignore_index=True)
             # update label tab
-            self.parent.LabelTab.update_widgets()
+            self.parent.LabelTab.setup_widgets()
         else:
             QMessageBox.warning(None,"warning","Can't decipher your data directory. Make sure the data tree format is correct.")
     def delete_row_clicked(self):

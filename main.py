@@ -22,6 +22,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setup_connection()
         self.setup_shortcut()
         self.show()
+        self.repaint()
     
     # ***** exec function *****
     def setup_connection(self):
@@ -76,7 +77,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.DataTab = Data_Tab(self)
             self.LabelTab = Label_Tab(self)
             self.BehaviorsTab = Behaviors_Tab(self)
-            # self.PreviewTab = Preview_Tab(self)
+            self.PreviewTab = Preview_Tab(self)
         else:
             QMessageBox.warning(None,"warning","Select a valid 'BM.h5' file")
 

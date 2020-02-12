@@ -43,8 +43,8 @@ class Ind_Canvas(FigureCanvas):
         self.ax.set_ylim(bottom=self.ylim[0], top=self.ylim[1])
         self.ax.grid(True, 'both')
         if self.mode == "Points (HDBSCAN)":
-            self.ax.scatter(self.embed[:frame,0], self.embed[:frame,1], s=5, c=self.colors[:frame])
-            self.ax.scatter(self.embed[frame,0], self.embed[frame,1], s=10, c='r')
+            self.ax.scatter(self.embed[:frame,0], self.embed[:frame,1], s=7, c='xkcd:grey', alpha=0.35)
+            self.ax.scatter(self.embed[frame,0], self.embed[frame,1], s=15, c='r')
         self.draw()
         pass
     def next_frame(self):

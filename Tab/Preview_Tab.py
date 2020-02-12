@@ -4,23 +4,30 @@ from collections import Counter
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import scipy.io as sio
 
 #import pyqt tools
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
 
 # import graph modules
 from widgets.BP_Canvas import BP_Canvas
 from widgets.Ind_Canvas import Ind_Canvas
 
+from tools.Helper import findVideoDir
+from tools.gmm import gmm
+
 class Preview_Tab():
     def __init__(self, parent):
         self.parent = parent
-        self.update_widgets()
+        self.setup_widgets()
         self.setup_connection()
         self.init_plot()
         self.timer = None
-    def update_widgets(self):
+
+# ***** exec function *****
+    def setup_widgets(self):
         behavior_list = self.parent.beh_df['behavior'].to_numpy()
         behavior = list(Counter(behavior_list).keys())
         # set dropdown box
@@ -39,13 +46,23 @@ class Preview_Tab():
         self.parent.Preview_Play_Button.clicked.connect(self.toggle_play)
         self.parent.Preview_Save_Button.clicked.connect(self.save)
         pass
+    def init_plot(self):
+        # append bodypoint
+        self.BPcanvas = BP_Canvas()
+        self.parent.Preview_Ant_Layout.addWidget(self.BPcanvas)
+        self.setup_ant_plot()
+        # append total density plot
+        self.IndDensityCanvas = Ind_Canvas()
+        self.parent.Preview_tSNE_Layout.addWidget(self.IndDensityCanvas)
+        self.setup_ind_plot()
+
+# ***** event listener function *****
     def update_entry_dropdown(self):
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
         num_entry = len(self.parent.beh_df[self.parent.beh_df['behavior']==behavior])
         entry = [str(ele) for ele in range(num_entry)]
         self.parent.Preview_Entry_ComboBox.clear()
         self.parent.Preview_Entry_ComboBox.addItems(entry)
-        pass
     def update_frame_lineEdit(self):
         # update frame limits
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
@@ -57,15 +74,8 @@ class Preview_Tab():
             self.parent.Preview_Stop_Frame_LineEdit.setValue(int(data['stop_fr']))
             # update comment
             self.parent.Comment_Label.setText(data['comment'])
-    def init_plot(self):
-        # append bodypoint
-        self.BPcanvas = BP_Canvas()
-        self.parent.Preview_Ant_Layout.addWidget(self.BPcanvas)
-        self.setup_ant_plot()
-        # append total density plot
-        self.IndDensityCanvas = Ind_Canvas()
-        self.parent.Preview_tSNE_Layout.addWidget(self.IndDensityCanvas)
-        self.setup_ind_plot()
+
+# update individual canvas
     def setup_ant_plot(self):
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
         entry = self.parent.Preview_Entry_ComboBox.currentText()
@@ -80,7 +90,7 @@ class Preview_Tab():
             main_data = self.parent.main_df[self.parent.main_df["folder_key"]==label_key]
             label_dir = main_data['folder_path'].iloc[0] 
             # find video file in dir
-            cur_video_dir = glob.glob(label_dir + "/*.avi")[0]
+            cur_video_dir = findVideoDir(label_dir+"/")[0]
             # find DLC file in dir
             cur_DLC_dir = glob.glob(label_dir + "/*.h5")[0]
             # populate proper canvas
@@ -93,8 +103,8 @@ class Preview_Tab():
             elif Preview_Ant_Mode == "Video":
                 self.BPcanvas.setup_canvas(cur_video_dir, cur_DLC_dir, mode="Video")
                 self.BPcanvas.update_canvas(frame=start_fr)
-            else:
-                print(":: No Ant Plot Mode")
+        else:
+            QMessageBox.warning(None,"warning", "Cannot find that behavior and entry data")
         pass
     def setup_ind_plot(self):
         behavior = self.parent.Preview_Behavior_ComboBox.currentText()
@@ -111,31 +121,32 @@ class Preview_Tab():
             label_dir = main_data['folder_path'].iloc[0] 
             # find embed file in dir
             cur_embed_dir = glob.glob(label_dir + "/EMBED.mat")[0]
-            # find cluster file in dir
-            cluster_dir = glob.glob(label_dir + "/cluster.npy")[0]
+            embed_data = sio.loadmat(cur_embed_dir)['embed_values_i']
+            # compute cluster
+            label_data, label_prob = gmm(embed_data)
             # populate proper figure
             if Preview_map_Mode == "Points (HDBSCAN)":
                 self.IndDensityCanvas.setup_canvas(
-                    embed = cur_embed_dir, 
-                    cluster = cluster_dir, 
+                    embed = embed_data, 
+                    label = label_data, 
+                    prob = label_prob,
                     mode = "Points (HDBSCAN)")
                 self.IndDensityCanvas.update_canvas(frame=start_fr)
             else:
                 print(":: No Individual Plot Mode")
-        pass
     def behavior_change(self):
         self.update_entry_dropdown()
         self.update_frame_lineEdit()
         self.setup_ant_plot()
         self.setup_ind_plot()
         self.restart_frame()
-        pass
     def entry_change(self):
         self.update_frame_lineEdit()
         self.setup_ant_plot()
         self.setup_ind_plot()
         self.restart_frame()
-        pass
+
+# ***** animation listener function *****
     def toggle_play(self):
         print(self.timer)
         if self.timer != None:
@@ -146,14 +157,12 @@ class Preview_Tab():
             self.timer = QTimer()
             self.timer.timeout.connect(self.nextFrameSlot)
             self.timer.start(100)
-        pass
     def nextFrameSlot(self):
         error_bp, BP_frame = self.BPcanvas.next_frame()
         error_ind, Ind_frame = self.IndDensityCanvas.next_frame()
         stop_fr = int(self.parent.Preview_Stop_Frame_LineEdit.value())
         if error_bp or error_ind or BP_frame >= stop_fr or Ind_frame >= stop_fr:
             self.restart_frame()
-        pass
     def restart_frame(self):
         if self.timer is not None:
             self.timer.stop()
@@ -163,7 +172,8 @@ class Preview_Tab():
         self.BPcanvas.update_canvas(frame=start_fr)
         self.IndDensityCanvas.update_canvas(frame=start_fr)
         self.BPcanvas.repaint()
-        pass
+
+# ***** unassigned *****
     def save(self):
         # extract UI data
         Preview_map_Mode = self.parent.Preview_map_ComboBox.currentText()

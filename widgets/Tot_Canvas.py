@@ -16,32 +16,26 @@ class Tot_Canvas(FigureCanvas):
         self.fig = Figure()
         super(FigureCanvas, self).__init__(self.fig)
         self.ax = self.fig.add_subplot(111)
-        self.embed = None
         self.label = None
         self.mode = ""
         self.xlim, self.ylim = (-100, 100), (-100, 100)
         self.color = None
         self.X_H, self.Y_H, self.GH_conv = None, None, None
     
-    def setup_canvas(self, tot_dir, mode):
+    def setup_canvas(self, embed, mode):
         self.mode = mode
-        # combine all data
-        for directory in tot_dir:
-            # combine embed data
-            data_i= sio.loadmat(directory+"/EMBED.mat")['embed_values_i']
-            self.embed = np.vstack((self.embed, data_i)) if self.embed is not None else data_i
         # set canvas size
-        self.num_frame = self.embed.shape[0]
-        self.xlim = (-1.1*np.max(self.embed), 1.1*np.max(self.embed))
-        self.ylim = (-1.1*np.max(self.embed), 1.1*np.max(self.embed))
+        self.num_frame = embed.shape[0]
+        self.xlim = (-1.1*np.max(embed), 1.1*np.max(embed))
+        self.ylim = (-1.1*np.max(embed), 1.1*np.max(embed))
         # update/init canvas
-        self.update_canvas()
+        self.update_canvas(embed)
     
-    def update_canvas(self):
+    def update_canvas(self, embed):
         self.ax.clear()
         if self.mode=="HDBSCAN Cluster":
             # copute clustering 
-            self.label, self.prob = gmm(self.embed)
+            self.label, self.prob = gmm(embed)
             # format cluster color
             num_cluster = np.max(self.label)+1
             color_palette = sns.color_palette('hls', num_cluster)
@@ -49,11 +43,11 @@ class Tot_Canvas(FigureCanvas):
             # create graph
             self.ax.set_xlim(left=self.xlim[0], right=self.xlim[1])
             self.ax.set_ylim(bottom=self.ylim[0], top=self.ylim[1])
-            self.ax.scatter(self.embed[:,0], self.embed[:,1], s=5, c=self.color)
+            self.ax.scatter(embed[:,0], embed[:,1], s=5, c=self.color)
             self.ax.grid(True, 'both')
         elif self.mode=="Density":
             # compute Gaussin Conv
-            self.GH_conv, self.X_H, self.Y_H = GaussConv(data=self.embed)
+            self.GH_conv, self.X_H, self.Y_H = GaussConv(data=embed)
             # create graph
             self.ax.pcolormesh(self.X_H, self.Y_H, self.GH_conv.T, cmap="jet")
             self.ax.grid(True, 'both')

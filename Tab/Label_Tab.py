@@ -17,6 +17,7 @@ from widgets.Tot_Canvas import Tot_Canvas
 
 # from tools.hdbscan import hdbscan
 from tools.gmm import gmm
+from tools.Helper import findVideoDir, findEmbedDir
 
 class Label_Tab():
     def __init__(self, parent):
@@ -72,16 +73,19 @@ class Label_Tab():
         folder_path = row["folder_path"].values.item()
         # finds individual files in folder key
         DLC_list = glob.glob(folder_path+"/"+self.cur_folder_key+"*.h5")
-        embed_list = glob.glob(folder_path+"/EMBED.mat")
-        avi_list = glob.glob(folder_path+"/"+self.cur_folder_key+"*.avi")
-        mp4_list = glob.glob(folder_path+"/"+self.cur_folder_key+"*.mp4")
+        embed_list, file_type = findEmbedDir(folder = folder_path)
+        video_list = findVideoDir(folder = folder_path)
         # check and assign directory
         if len(DLC_list)==1: self.cur_DLC_dir = DLC_list[0]
         if len(embed_list)==1: self.cur_embed_dir = embed_list[0]
-        if len(avi_list)==1: self.cur_video_dir = avi_list[0]
-        elif len(mp4_list)==1: self.cur_video_dir = mp4_list[0]
+        if len(video_list)==1: self.cur_video_dir = video_list[0]
         # compute cluster
-        embed_data = sio.loadmat(self.cur_embed_dir)['embed_values_i']
+        if file_type == "npy":
+            embed_data = np.load(self.cur_embed_dir)
+        elif file_type == "mat":
+            embed_data = sio.loadmat(self.cur_embed_dir)['embed_values_i']
+        else:
+            embed_data = []
         label_data, label_prob = gmm(embed_data)
         # update individual canvas
         self.update_bp_plot()
@@ -91,8 +95,20 @@ class Label_Tab():
     def update_tot_plot(self):
         mode = self.parent.Label_Population_ComboBox.currentText()
         tot_dir = self.parent.main_df['folder_path'].to_numpy()
+        embed = None
+        # combine all data
+        for directory in tot_dir:
+            embed_list, file_type = findEmbedDir(folder = directory)
+            if file_type == "npy":
+                data_i = np.load(embed_list[0])
+            elif file_type == "mat":
+                data_i = sio.loadmat(embed_list[0])['embed_values_i']
+            else:
+                data_i = []
+            embed = np.vstack((embed, data_i)) if embed is not None else data_i
+
         if len(tot_dir)!=0:
-            self.TotDensityCanvas.setup_canvas(tot_dir=tot_dir, mode=mode)
+            self.TotDensityCanvas.setup_canvas(embed=embed, mode=mode)
             self.parent.repaint()
         else:
             QMessageBox.warning(None,"warning", "cannot get all total data")
