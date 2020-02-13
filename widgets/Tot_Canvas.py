@@ -9,7 +9,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.ticker
 
 from tools.GaussConv import GaussConv
-from tools.gmm import gmm
 
 class Tot_Canvas(FigureCanvas):
     def __init__(self, *args, **kwargs):
@@ -22,20 +21,20 @@ class Tot_Canvas(FigureCanvas):
         self.color = None
         self.X_H, self.Y_H, self.GH_conv = None, None, None
     
-    def setup_canvas(self, embed, mode):
+    def setup_canvas(self, embed, cluster, mode):
         self.mode = mode
         # set canvas size
         self.num_frame = embed.shape[0]
         self.xlim = (-1.1*np.max(embed), 1.1*np.max(embed))
         self.ylim = (-1.1*np.max(embed), 1.1*np.max(embed))
         # update/init canvas
-        self.update_canvas(embed)
+        self.update_canvas(embed, cluster)
     
-    def update_canvas(self, embed):
+    def update_canvas(self, embed, cluster):
         self.ax.clear()
         if self.mode=="HDBSCAN Cluster":
-            # copute clustering 
-            self.label, self.prob = gmm(embed)
+            # compute clustering 
+            self.label, self.prob = cluster[:,0].astype(int), cluster[:,1]
             # format cluster color
             num_cluster = np.max(self.label)+1
             color_palette = sns.color_palette('hls', num_cluster)

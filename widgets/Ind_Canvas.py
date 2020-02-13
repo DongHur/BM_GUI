@@ -29,7 +29,7 @@ class Ind_Canvas(FigureCanvas):
         self.ylim = (-1.1*np.max(self.embed), 1.1*np.max(self.embed))
         if mode == "Points (HDBSCAN)":
             # format cluster color
-            num_cluster = np.max(self.label)+1
+            num_cluster = int(np.max(self.label)+1)
             color_palette = sns.color_palette('hls', num_cluster)
             self.colors = [color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in self.label]
             self.prob_colors = np.array([sns.desaturate(x, p) for x, p in zip(self.colors, self.prob)])

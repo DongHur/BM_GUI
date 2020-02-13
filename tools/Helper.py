@@ -21,3 +21,11 @@ def findEmbedDir(folder):
         embed = []
         fileType = None
     return embed, fileType
+
+def findClusterDir(folder):
+    npy_list = glob.glob(folder+"/CLUSTER.npy")
+    if len(npy_list)>=1: 
+        cluster = npy_list
+    else: 
+        cluster = []
+    return cluster

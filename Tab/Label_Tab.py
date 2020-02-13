@@ -16,8 +16,9 @@ from widgets.Ethogram_Canvas import Ethogram_Canvas
 from widgets.Tot_Canvas import Tot_Canvas
 
 # from tools.hdbscan import hdbscan
-from tools.gmm import gmm
-from tools.Helper import findVideoDir, findEmbedDir
+import hdbscan
+# from tools.gmm import gmm
+from tools.Helper import findVideoDir, findEmbedDir, findClusterDir
 
 class Label_Tab():
     def __init__(self, parent):
@@ -75,10 +76,13 @@ class Label_Tab():
         DLC_list = glob.glob(folder_path+"/"+self.cur_folder_key+"*.h5")
         embed_list, file_type = findEmbedDir(folder = folder_path)
         video_list = findVideoDir(folder = folder_path)
+        cluster_list = findClusterDir(folder = folder_path)
+        
         # check and assign directory
         if len(DLC_list)==1: self.cur_DLC_dir = DLC_list[0]
         if len(embed_list)==1: self.cur_embed_dir = embed_list[0]
         if len(video_list)==1: self.cur_video_dir = video_list[0]
+        if len(cluster_list)==1: self.cur_cluster_dir = cluster_list[0]
         # compute cluster
         if file_type == "npy":
             embed_data = np.load(self.cur_embed_dir)
@@ -86,7 +90,11 @@ class Label_Tab():
             embed_data = sio.loadmat(self.cur_embed_dir)['embed_values_i']
         else:
             embed_data = []
-        label_data, label_prob = gmm(embed_data)
+
+        cluster_data = np.load(self.cur_cluster_dir)
+        label_data, label_prob = cluster_data[:,0].astype(int), cluster_data[:,1]
+        print(label_data)
+        print(label_prob)
         # update individual canvas
         self.update_bp_plot()
         self.update_ind_plot(embed_data, label_data, label_prob)
@@ -95,7 +103,7 @@ class Label_Tab():
     def update_tot_plot(self):
         mode = self.parent.Label_Population_ComboBox.currentText()
         tot_dir = self.parent.main_df['folder_path'].to_numpy()
-        embed = None
+        embed, cluster = None, None
         # combine all data
         for directory in tot_dir:
             embed_list, file_type = findEmbedDir(folder = directory)
@@ -106,9 +114,12 @@ class Label_Tab():
             else:
                 data_i = []
             embed = np.vstack((embed, data_i)) if embed is not None else data_i
-
+            # compile clusters
+            cluster_list = findClusterDir(folder = directory)
+            cluster_data = np.load(cluster_list[0])
+            cluster = np.vstack((cluster, cluster_data)) if cluster is not None else cluster_data
         if len(tot_dir)!=0:
-            self.TotDensityCanvas.setup_canvas(embed=embed, mode=mode)
+            self.TotDensityCanvas.setup_canvas(embed=embed, cluster=cluster, mode=mode)
             self.parent.repaint()
         else:
             QMessageBox.warning(None,"warning", "cannot get all total data")
